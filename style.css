@@ -2,6 +2,20 @@ body{
     margin: 0;
     margin-top: 6em;
     background-color: rgb(53, 53, 53);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.button{
+    display: block;
+    width: fit-content;
+    text-decoration: none;
+    padding: 0.75em 1.5em;
+    border-radius: 5px;
+    border: 1px solid rgb(194, 194, 194);
+}
+
+.button:hover{
+    background-color: rgb(173, 173, 173);
 }
 
 .navigation{
@@ -10,19 +24,46 @@ body{
     justify-content: space-around;
     position: fixed;
     width: 100%;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
 }
+
+/* 
+.navigation, .navigation, .navigation input{
+    font-size: 1.2rem;
+}
+
+.navigation form {
+    display: flex;
+    align-items: center;
+}
+
+.navigation form input{
+    padding: 0.15em 0.5em;
+} */
 
 .navigation ul{
     width: 50%;
     display: flex;
     list-style: none;
     justify-content: space-around;
+    line-height: 2rem;
 }
 
 
-.form {
+.navigation .right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.navigation .right button{
+    padding: 0.5em;
+}
+
+
+.auth {
     margin: 50px auto;
     width: 300px;
     padding: 30px 25px;
@@ -56,7 +97,8 @@ h1.login-title {
     background: #55a1ff;
     border: 0;
     outline: 0;
-    width: 100%;
+    width: fit-content;
+    padding: 1em 3em;
     height: 50px;
     font-size: 16px;
     text-align: center;
@@ -76,4 +118,148 @@ h1.login-title {
 h3 {
     font-weight: normal;
     text-align: center;
+}
+
+.content{
+    padding: 3em;
+    margin-inline: auto;
+    background-color: rgb(231, 231, 231);
+    width: 60%;
+    margin-bottom: 3em;
+}
+
+.orders{
+    list-style-type: none;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    padding-inline-start: 0px;
+    margin-bottom: 2em;
+}
+
+.orders .button{
+    border: 0;
+    border-radius: 0;
+    margin-top: 1em;
+    color: rgb(255, 255, 255);
+    background-color: rgb(34, 102, 228);
+    margin-bottom: 4em;
+}
+
+.orders .button:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(95, 95, 95);
+}
+
+
+.orders form {
+    box-sizing: content-box;
+    padding-block: 2em;
+    width: 100%;
+}
+
+.orders form textarea{
+    box-sizing: border-box;
+    padding: 2em;
+    width: 100%;
+    resize: vertical;
+    display: inline-block;
+    margin-bottom: 1em;
+    font-size: 1rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.orders .details{
+    display: flex;
+}
+
+.orders .messages{
+    padding: 2em;
+    background-color: white;
+    max-height: 50vh;
+    overflow-y: scroll;
+}
+
+.orders .messages, .orders form textarea{
+    border: 1px solid rgb(196, 196, 196);
+}
+
+.orders p{
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+}
+
+.orders .messages .replier .value,.orders .messages .poster .value{
+    color: white;
+    padding: 1em 1em;
+}
+
+.orders .messages .replier .value{
+    background: linear-gradient(180deg, rgba(72,152,255,1) 0%, rgba(15,120,255,1) 100%);
+}
+
+.orders .messages .poster .value{
+    background: linear-gradient(180deg, rgb(131, 131, 131) 0%, rgb(114, 114, 114) 100%);
+}
+
+.orders .message{
+    display: flex;
+    flex-direction: column;
+}
+
+.orders .datetime{
+    color:rgb(68, 68, 68);
+}
+
+
+.orders .ticket-id, .orders .order-number, .orders .email{
+    display: flex;
+    padding-right: 1em;
+}
+
+.orders .ticket-id .label, .orders .order-number .label, .orders .email .label, .orders .messages .label{
+    font-size: 1rem;
+    display: flex;
+    margin-right: 1em;
+    padding-block: 0.5em;
+}
+
+.orders .ticket-id .value, .orders  .order-number .value, .orders  .email .value, .orders  .messages .value{
+    margin-block: auto;
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    padding: 0.4em 1em;
+}
+
+.orders .ticket-id .value, .orders  .order-number .value, .orders  .email .value{
+    border: 1px solid rgb(196, 196, 196);
+}
+
+.poster{
+    margin-left: auto;
+    width: 70%;
+}
+
+.poster .author{
+    margin-top: 2em;
+    text-align: right;
+}
+
+.poster p{
+    width: fit-content;
+    margin-left: auto;
+}
+
+.replier{
+    margin-right: auto;
+    width: 70%;
+}
+
+.replier .author{
+    margin-top: 2em;
+    text-align: left;
+}
+
+.replier p{
+    width: fit-content;
+    margin-right: auto;
 }

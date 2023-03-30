@@ -3,12 +3,13 @@
 <head>
     <meta charset="utf-8"/>
     <title>Registration</title>
-    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="../assets/fa/css/all.min.css">
+    <link rel="stylesheet" href="../style.css"/>
 </head>
 <body>
 <?php
-    include '/php/navigation.php';
-    require('/php/db.php');
+    include '../php/navigation.php';
+    require('../php/db.php');
     // When form submitted, insert values into the database.
     if (isset($_REQUEST['email'])) {
         // removes backslashes
@@ -26,9 +27,9 @@
         $password = mysqli_real_escape_string($con, $password);
 
         $create_datetime = date("Y-m-d H:i:s");
-        $query    = "INSERT into `users` (first_name, last_name, password, email, create_datetime)
-                     VALUES ('$first_name', '$last_name', '" . md5($password) . "', '$email', '$create_datetime')";
-        $result   = mysqli_query($con, $query);
+
+        $result = dbQuery("INSERT into `users` (first_name, last_name, password, email, create_datetime)
+                     VALUES ('$first_name', '$last_name', '" . md5($password) . "', '$email', '$create_datetime')");
         if ($result) {
             echo "<div class='form'>
                   <h3>You are registered successfully.</h3><br/>
@@ -42,7 +43,7 @@
         }
     } else {
 ?>
-    <form class="form" action="" method="post">
+    <form class="auth" action="" method="post">
         <h1 class="login-title">Registration</h1>
         <input type="text" class="login-input" name="first_name" placeholder="First name" required />
         <input type="text" class="login-input" name="last_name" placeholder="Last name" required />
