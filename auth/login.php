@@ -31,6 +31,7 @@
                 'last_name' => $data['last_name'],
                 'email' => $data['email'],
                 'create_datetime' => $data['create_datetime'],
+                'user_type' => $data['user_type'],
             ];
             // Redirect to user dashboard page
             header("Location: ../account.php");
