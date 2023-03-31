@@ -14,13 +14,10 @@ include "auth/session.php";
     <?php include 'php/navigation.php'; ?>
     <div class="content">
         <p>Hey, <?php echo $_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']; ?>!</p>
-        <p>Email: <?php echo $_SESSION['user']['email'] ?></p>
-        <p>Account Created: <?php echo $_SESSION['user']['create_datetime']?></p>
         <br>
-        <a href="tickets.php" class="button">All Tickets</a>
         <!-- <p>You are now user dashboard page.</p> -->
 
-        <h2>Your support tickets</h2>
+        <h2>All Support tickets</h2>
         <?php
             require 'php/db.php';
             require 'php/utils.php';
@@ -29,7 +26,7 @@ include "auth/session.php";
             if (isset($id)) {
 
                 $html = "<ul class='orders'>";
-                $tickets = dbQuery("SELECT * FROM `tickets` WHERE user_id='$id' ORDER BY `create_datetime` DESC");
+                $tickets = dbQuery("SELECT * FROM `tickets` ORDER BY `create_datetime` DESC");
                 while ($data = mysqli_fetch_assoc($tickets)){
                     $messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=".$data['id']." ORDER BY `create_datetime` ASC");
                     $messages_html = "";
@@ -59,6 +56,10 @@ include "auth/session.php";
                                 <div class="order-number">
                                     <p class="label">Order Number:</p>
                                     <p class="value">'.$data['order_number'].'</p>
+                                </div>
+                                <div class="email">
+                                    <p class="label">Associated User ID:</p>
+                                    <p class="value">'.$data['id'].'</p>
                                 </div>
                             </div>
                             <div class="messages">
