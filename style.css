@@ -26,6 +26,7 @@ body{
     width: 100%;
     top: 0;
     left: 0;
+    z-index: 2;
 }
 
 /* 
@@ -128,21 +129,26 @@ h3 {
     margin-bottom: 3em;
 }
 
+.content h2{
+    margin-bottom: 2em;
+}
+
 .orders{
     list-style-type: none;
     margin-block-start: 0em;
     margin-block-end: 0em;
     padding-inline-start: 0px;
     margin-bottom: 2em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .orders .button{
     border: 0;
     border-radius: 0;
-    margin-top: 1em;
     color: rgb(255, 255, 255);
     background-color: rgb(34, 102, 228);
-    margin-bottom: 4em;
 }
 
 .orders .button:hover{
@@ -172,11 +178,27 @@ h3 {
     display: flex;
 }
 
+.tickets li{
+    background-color: rgb(252, 252, 252);
+    border-bottom: 1px solid rgb(216, 216, 216);
+    padding: 1em;
+    margin-bottom: 3em;
+    width: 100%;
+}
+
+.tickets .details .buttons{
+    float: right;
+    margin-left: auto;
+}
+
 .orders .messages{
     padding: 2em;
     background-color: white;
     max-height: 50vh;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
 }
 
 .orders .messages, .orders form textarea{
@@ -212,7 +234,7 @@ h3 {
 }
 
 
-.orders .ticket-id, .orders .order-number, .orders .email{
+.orders .ticket-id, .orders .order-number, .orders .email, .orders .ticket-status{
     display: flex;
     padding-right: 1em;
 }
@@ -233,6 +255,29 @@ h3 {
 
 .orders .ticket-id .value, .orders  .order-number .value, .orders  .email .value{
     border: 1px solid rgb(196, 196, 196);
+}
+
+.ticket-status .value, .ticket-status .label{
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.ticket-status{
+    width: fit-content;
+    align-items: center;
+}
+
+.orders .ticket-status{
+    padding-top: 0.25em;
+    padding-left: 1em;
+    background-color: rgb(252, 252, 252);
+    transform: translateY(-100%);
+    position: absolute;
+}
+
+.ticket-status .value{
+    padding: 0.5em 1em;
 }
 
 .poster{
@@ -263,4 +308,39 @@ h3 {
 .replier p{
     width: fit-content;
     margin-right: auto;
+}
+
+
+.status-pending{
+    --colour: orange;
+}
+
+.status-responded{
+    --colour: green;
+}
+
+.status-closed{
+    --colour: rgb(46, 46, 46);
+}
+
+.status-resolved{
+    --colour: rgb(18, 162, 167);
+}
+
+.status{
+    border: 2px solid var(--colour) !important;
+    color: var(--colour);
+    position: relative;
+    z-index: 1;
+}
+
+.status::after{
+    content: "";
+    top: 0;
+    left: 0;
+    opacity: 0.1;
+    background-color: var(--colour);
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }

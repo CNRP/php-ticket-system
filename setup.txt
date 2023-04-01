@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `users` (
  `last_name` varchar(50) NOT NULL,
  `email` varchar(50) NOT NULL,
  `password` varchar(50) NOT NULL,
+ `user_id` int(11) DEFAULT '1',
  `create_datetime` datetime NOT NULL,
  PRIMARY KEY (`id`)
 );
@@ -14,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `tickets` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `order_number` varchar(50) NOT NULL,
  `create_datetime` datetime NOT NULL,
- `status` varchar(50) NOT NULL,
+ `status` varchar(50) NOT NULL DEFAULT 'pending',
  `user_id` INT,
  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
  PRIMARY KEY (`id`)

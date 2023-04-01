@@ -22,10 +22,9 @@ include "auth/session.php";
             require 'php/db.php';
             require 'php/utils.php';
             // When form submitted, check and create user session.
-            $id = $_SESSION['user']['id'];
-            if (isset($id)) {
+            if ($_SESSION['user']['user_type'] == 2) {
 
-                $html = "<ul class='orders'>";
+                $html = "<ul class='tickets orders'>";
                 $tickets = dbQuery("SELECT * FROM `tickets` ORDER BY `create_datetime` DESC");
                 while ($data = mysqli_fetch_assoc($tickets)){
                     $messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=".$data['id']." ORDER BY `create_datetime` ASC");
@@ -48,10 +47,13 @@ include "auth/session.php";
 
                     $html .= '
                         <li>
+                            <div class="ticket-status">
+                                <p class="value status status-'.$data['status'].'">'.$data['status'].'</p>
+                            </div>
                             <div class="details">
                                 <div class="ticket-id">
                                     <p class="label">Ticket ID:</p>
-                                    <p class="value">'.$data['id'].'</p>
+                                    <a class="value" href="support_ticket.php?id='.$data['id'].'">'.$data['id'].'</a>
                                 </div>
                                 <div class="order-number">
                                     <p class="label">Order Number:</p>
@@ -59,13 +61,12 @@ include "auth/session.php";
                                 </div>
                                 <div class="email">
                                     <p class="label">Associated User ID:</p>
-                                    <p class="value">'.$data['id'].'</p>
+                                    <a href="account.php?user="'.$data['id'].'" class="value">'.$data['id'].'</a>
+                                </div>
+                                <div class="buttons">
+                                    <a class="button" href="support_ticket.php?id='.$data['id'].'"> Expand Ticket </a>
                                 </div>
                             </div>
-                            <div class="messages">
-                                '. $messages_html .'
-                            </div>
-                            <a class="button" href="support_ticket.php?id='.$data['id'].'"> Expand Ticket </a>
                         </li>
                     ';
                 }

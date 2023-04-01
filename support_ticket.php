@@ -14,8 +14,6 @@ include "php/utils.php";
 <body>
     <?php include 'php/navigation.php'; ?>
     <div class="content">
-        <h2>Your support ticket</h2>
-        <div class="orders">
         <?php
             require 'php/db.php';
 
@@ -23,30 +21,30 @@ include "php/utils.php";
             $user_id = $_SESSION['user']['id'];
             $ticket_user_id = $ticket['user_id'];
 
-            if ($user_id == $ticket_user_id or $_SESSION['user']['email'] == "connorefc97@gmail.com") {
+            if ($user_id == $ticket_user_id or $_SESSION['user']['user_type'] == 2) {
 
                 if (isset($_REQUEST['message'])) {
                     $create_datetime = date("Y-m-d H:i:s");
                     $message = stripslashes($_REQUEST['message']);
                     $message = mysqli_real_escape_string($con, $message);
+
+                    ($_SESSION['user']['user_type'] == 2 ? $status = "responded" : $status = "pending");
+                    $update = dbQuery("UPDATE `tickets` SET `status`='".$status."' WHERE id='".$_GET['id']."'");
+
                     $id = $_SESSION['user']['id'];
                     $result = dbQuery("INSERT INTO `ticket_messages`( `user_id`, `message`, `create_datetime`, `ticket_id`)
                             VALUES ('$id', '$message', '$create_datetime', '".$ticket['id']. "')");
+
+                    header("Location: ../support_ticket.php?id=".$ticket['id']. "");
                 }
 
-                $ticket_messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=".$_GET['id']." ORDER BY `create_datetime` ASC");
+                $ticket_messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=".$_GET['id']." ORDER BY `create_datetime` DESC");
                 $messages_html = "";
 
                 while (($messagedata = mysqli_fetch_assoc($ticket_messages))){
                     $id = $messagedata['user_id'];
-                    $userdata = dbQueryAssoc("SELECT `id`, `first_name`, `last_name`, `email` FROM `users` WHERE id='$id' ORDER BY `create_datetime` ASC");
-
-                    $class = "replier";
-                    if($id == $_SESSION['user']['id']){
-                        $class = "poster";
-                    }
-                    // <p class='datetime'>".$date['hour'].":".$date['minute']." - ".$date['day']."/".$date['month']."</p>
-
+                    $userdata = dbQueryAssoc("SELECT `id`, `first_name`, `last_name`, `email` FROM `users` WHERE id='$id'");
+                    ($id == $_SESSION['user']['id'] ? $class ="poster": $class = "replier");
                     $date = date_parse($messagedata['create_datetime']);
                     $messages_html .= "
                     <div class='$class'>
@@ -58,6 +56,11 @@ include "php/utils.php";
                 }
 
                 $html ='
+                <h1>Your support ticket</h1>
+                <div class="ticket-status">
+                    <p class="value status status-'.$ticket['status'].'">'.($ticket['status'] == "responded" ? "New response" : $ticket['status']).'</p>
+                </div>
+                <div class="orders">
                     <div class="details">
                         <div class="ticket-id">
                             <p class="label">Ticket ID:</p>

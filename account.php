@@ -17,7 +17,9 @@ include "auth/session.php";
         <p>Email: <?php echo $_SESSION['user']['email'] ?></p>
         <p>Account Created: <?php echo $_SESSION['user']['create_datetime']?></p>
         <br>
-        <a href="tickets.php" class="button">All Tickets</a>
+        <?php if($_SESSION['user']['user_type']){ ?>
+            <a href="tickets.php" class="button">All Tickets</a>
+        <?php } ?>
         <!-- <p>You are now user dashboard page.</p> -->
 
         <h2>Your support tickets</h2>
@@ -28,43 +30,31 @@ include "auth/session.php";
             $id = $_SESSION['user']['id'];
             if (isset($id)) {
 
-                $html = "<ul class='orders'>";
+                $html = "<ul class='orders tickets'>";
                 $tickets = dbQuery("SELECT * FROM `tickets` WHERE user_id='$id' ORDER BY `create_datetime` DESC");
                 while ($data = mysqli_fetch_assoc($tickets)){
-                    $messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=".$data['id']." ORDER BY `create_datetime` ASC");
-                    $messages_html = "";
-                    while (($messagedata = mysqli_fetch_assoc($messages))){
-                        $id = $messagedata['user_id'];
-                        $userdata = dbQueryAssoc("SELECT `id`, `first_name`, `last_name`, `email` FROM `users` WHERE id='$id' ORDER BY `create_datetime` ASC");
-
-                        $class = "replier";
-                        if($id == $_SESSION['user']['id']){
-                            $class = "poster";
-                        }
-                        $messages_html .= "
-                            <div class='$class'>
-                                <p class='author'>".$userdata['first_name']." ".$userdata['last_name']."</p>
-                                <p class='value'>".$messagedata['message']."</p>
-                            </div>
-                            ";
-                    }
-
                     $html .= '
                         <li>
+                            <div class="ticket-status">
+                                <p class="value status status-'.$data['status'].'">'.($data['status'] == "responded" ? "New response" : $data['status']).'</p>
+                            </div>
                             <div class="details">
                                 <div class="ticket-id">
                                     <p class="label">Ticket ID:</p>
-                                    <p class="value">'.$data['id'].'</p>
+                                    <a class="value" href="support_ticket.php?id='.$data['id'].'">'.$data['id'].'</a>
                                 </div>
                                 <div class="order-number">
                                     <p class="label">Order Number:</p>
                                     <p class="value">'.$data['order_number'].'</p>
                                 </div>
+                                <div class="email">
+                                    <p class="label">Associated User ID:</p>
+                                    <a class="value">'.$data['id'].'</a>
+                                </div>
+                                <div class="buttons">
+                                    <a class="button" href="support_ticket.php?id='.$data['id'].'"> Expand Ticket </a>
+                                </div>
                             </div>
-                            <div class="messages">
-                                '. $messages_html .'
-                            </div>
-                            <a class="button" href="support_ticket.php?id='.$data['id'].'"> Expand Ticket </a>
                         </li>
                     ';
                 }
