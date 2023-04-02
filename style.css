@@ -1,3 +1,7 @@
+:root{
+    --button-color: rgb(63 113 207);
+}
+
 body{
     margin: 0;
     margin-top: 6em;
@@ -9,7 +13,7 @@ body{
     display: block;
     width: fit-content;
     text-decoration: none;
-    padding: 0.75em 1.5em;
+    padding: 0.75em 1em;
     border-radius: 5px;
     border: 1px solid rgb(194, 194, 194);
 }
@@ -28,20 +32,6 @@ body{
     left: 0;
     z-index: 2;
 }
-
-/* 
-.navigation, .navigation, .navigation input{
-    font-size: 1.2rem;
-}
-
-.navigation form {
-    display: flex;
-    align-items: center;
-}
-
-.navigation form input{
-    padding: 0.15em 0.5em;
-} */
 
 .navigation ul{
     width: 50%;
@@ -95,7 +85,7 @@ h1.login-title {
 
 .login-button {
     color: #fff;
-    background: #55a1ff;
+    background: var(--button-color);
     border: 0;
     outline: 0;
     width: fit-content;
@@ -148,7 +138,7 @@ h3 {
     border: 0;
     border-radius: 0;
     color: rgb(255, 255, 255);
-    background-color: rgb(34, 102, 228);
+    background-color: var(--button-color);
 }
 
 .orders .button:hover{
@@ -159,7 +149,7 @@ h3 {
 
 .orders form {
     box-sizing: content-box;
-    padding-block: 2em;
+    padding-block: 1em;
     width: 100%;
 }
 
@@ -176,26 +166,38 @@ h3 {
 
 .orders .details{
     display: flex;
+    padding-inline: 1em;
+    align-items: center;
 }
 
 .tickets li{
+    position: relative;
     background-color: rgb(252, 252, 252);
-    border-bottom: 1px solid rgb(216, 216, 216);
-    padding: 1em;
-    margin-bottom: 3em;
+    border: 1px solid rgb(216, 216, 216);
     width: 100%;
+    margin-bottom: 2em;
 }
 
 .tickets .details .buttons{
     float: right;
     margin-left: auto;
+    margin-block: auto;
+}
+
+.details .buttons i{
+    font-size: 1.3rem;
+}
+
+.details .buttons{
+    padding: 1.2em 0em;
 }
 
 .orders .messages{
-    padding: 2em;
+    padding: 1em;
     background-color: white;
     max-height: 50vh;
     overflow-y: scroll;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column-reverse;
     width: 100%;
@@ -210,14 +212,15 @@ h3 {
     margin-block-end: 0.5em;
 }
 
-.orders .messages .replier .value, .orders .messages .poster .value{
+.orders .messages .value{
     color: white;
-    padding: 1em 1em;
-    word-break: break-word;
+    padding: 1em 1.5em;
+    width: fit-content;
+    white-space: pre-wrap;
 }
 
 .orders .messages .replier .value{
-    background: linear-gradient(180deg, rgba(72,152,255,1) 0%, rgba(15,120,255,1) 100%);
+    background: linear-gradient(180deg, var(--button-color) 0%, rgb(8, 95, 207) 100%);
 }
 
 .orders .messages .poster .value{
@@ -234,33 +237,41 @@ h3 {
 }
 
 
-.orders .ticket-id, .orders .order-number, .orders .email, .orders .ticket-status{
+.orders .ticket-info, .orders .ticket-status{
     display: flex;
-    padding-right: 1em;
+    padding: 0.5em;
 }
 
-.orders .ticket-id .label, .orders .order-number .label, .orders .email .label, .orders .messages .label{
+.orders .ticket-info .label{
     font-size: 1rem;
     display: flex;
     margin-right: 1em;
     padding-block: 0.5em;
 }
 
-.orders .ticket-id .value, .orders  .order-number .value, .orders  .email .value, .orders  .messages .value{
+.orders .ticket-info .value{
     margin-block: auto;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(172, 172, 172);
+    color: white;
     border-radius: 5px;
     padding: 0.4em 1em;
 }
 
-.orders .ticket-id .value, .orders  .order-number .value, .orders  .email .value{
+.orders .messages .value{
+    border-radius: 15px;
+}
+
+.orders .ticket-info .value{
     border: 1px solid rgb(196, 196, 196);
+    font-size: 0.8rem;
 }
 
 .ticket-status .value, .ticket-status .label{
     font-size: 0.7rem;
+    background: white;
     text-transform: uppercase;
     font-weight: bold;
+    width: fit-content;
 }
 
 .ticket-status{
@@ -270,14 +281,8 @@ h3 {
 
 .orders .ticket-status{
     padding-top: 0.25em;
-    padding-left: 1em;
-    background-color: rgb(252, 252, 252);
-    transform: translateY(-100%);
+    transform: translateY(-50%);
     position: absolute;
-}
-
-.ticket-status .value{
-    padding: 0.5em 1em;
 }
 
 .poster{
@@ -310,6 +315,28 @@ h3 {
     margin-right: auto;
 }
 
+.status-reply{
+    margin-block: 2em;
+    position: relative;
+    background: white;
+    border: 4px solid var(--colour);
+}
+
+.status-reply::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--colour);
+    opacity: 0.1;
+}
+
+
+.status-reply .alert{
+    padding: 1em;
+}
 
 .status-pending{
     --colour: orange;
@@ -328,10 +355,26 @@ h3 {
 }
 
 .status{
+    padding: 0.5em 1em;
     border: 2px solid var(--colour) !important;
     color: var(--colour);
     position: relative;
     z-index: 1;
+}
+
+.ticket-status{
+    width: 100%;
+}
+
+.status-messages{
+    margin-right: 1.5em;
+    margin-left: auto !important;
+    --color:  rgb(46, 46, 46);
+    padding: 0.5em 0.8em;
+    margin-left: 1em;
+    color: var(--color);
+    border: 2px solid var(--color) !important;
+    font-size: 0.6em !important;
 }
 
 .status::after{
@@ -343,4 +386,10 @@ h3 {
     position: absolute;
     width: 100%;
     height: 100%;
+}
+
+
+.ticket-status .right{
+    display: flex;
+    margin-left: auto !important;
 }

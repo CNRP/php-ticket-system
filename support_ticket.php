@@ -41,19 +41,60 @@ include "php/utils.php";
                 $ticket_messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=".$_GET['id']." ORDER BY `create_datetime` DESC");
                 $messages_html = "";
 
+                $total_messages = mysqli_num_rows($ticket_messages);
+                $message_count = 1;
+                // console_log($total_messages = $total_messages);
                 while (($messagedata = mysqli_fetch_assoc($ticket_messages))){
+                    if($message_count == $total_messages){
+                        $date = date_parse($ticket['create_datetime']);
+
+                        $bot_response = "
+                            <div class='".($_SESSION['user']['user_type'] == 2 ? $class ="poster": $class = "replier")."'>
+                                <p class='author'>Automated Response <i class='fa-solid fa-robot'></i></p>
+                                <p class='value'>Hey. Thanks for contacting us, we will try our hardest to get back to you in a timely manner. Usually within a few hours!</p>
+                                <small><p class='datetime'>".$date['hour'].":".($date['minute'] < 10 ? '0'.$date['minute'] : $date['minute'])." - ".($date['day'] < 10 ? '0'.$date['day'] : $date['day'])."/".($date['month'] < 10 ? '0'.$date['month'] : $date['month'])."</p></small>
+                            </div>
+                            ";
+
+                        $messages_html .= $bot_response;
+                    }
                     $id = $messagedata['user_id'];
                     $userdata = dbQueryAssoc("SELECT `id`, `first_name`, `last_name`, `email` FROM `users` WHERE id='$id'");
-                    ($id == $_SESSION['user']['id'] ? $class ="poster": $class = "replier");
                     $date = date_parse($messagedata['create_datetime']);
+
                     $messages_html .= "
-                    <div class='$class'>
-                        <p class='author'>".$userdata['first_name']." ".$userdata['last_name']."</p>
+                    <div class='".($id == $_SESSION['user']['id'] ? $class ="poster": $class = "replier")."'>
+                        <p class='author'>".$userdata['first_name']." ". substr($userdata['last_name'], 0 , 1) ."</p>
                         <p class='value'>".$messagedata['message']."</p>
                         <small><p class='datetime'>".$date['hour'].":".($date['minute'] < 10 ? '0'.$date['minute'] : $date['minute'])." - ".($date['day'] < 10 ? '0'.$date['day'] : $date['day'])."/".($date['month'] < 10 ? '0'.$date['month'] : $date['month'])."</p></small>
                     </div>
                     ";
+
+                    $message_count++;
                 }
+                    $status_reply = "";
+                    switch ($ticket['status']) {
+                        case "closed":
+                            $status_reply = "
+                            <div class='status-reply status-". $ticket['status']."'>
+                                <p class='alert'>
+                                    <i class='fa-solid fa-robot'></i> This ticket has been marked as closed, if your issue wasnt resolved feel free to reply here or open another ticket.
+                                </p>
+                            </div>
+                            ";
+                            break;
+                        case "resolved":
+                            $status_reply = "
+                            <div class='status-reply status-". $ticket['status']."'>
+                                <p class='alert'>
+                                    <i class='fa-solid fa-robot'></i> This ticket has been marked as resolved, if you need help with another issue, feel free to open another ticket.
+                                </p>
+                            </div>
+                            ";
+                            break;
+                        default:
+                            $status_reply = "";
+                    }
 
                 $html ='
                 <h1>Your support ticket</h1>
@@ -62,24 +103,25 @@ include "php/utils.php";
                 </div>
                 <div class="orders">
                     <div class="details">
-                        <div class="ticket-id">
+                        <div class="ticket-info">
                             <p class="label">Ticket ID:</p>
                             <p class="value">'.$ticket['id'].'</p>
                         </div>
-                        <div class="order-number">
+                        <div class="ticket-info">
                             <p class="label">Order Number:</p>
                             <p class="value">'.$ticket['order_number'].'</p>
                         </div>
-                        <div class="email">
+                        <div class="ticket-info">
                             <p class="label">Associated Email:</p>
                             <p class="value">'.$userdata['email'].'</p>
                         </div>
                     </div>
                 <div class="messages">
-                    '. $messages_html .'
+                    ' . ($message_count > $total_messages ? $status_reply : "") . '
+                    ' . $messages_html . '
                 </div>
                 <form class="form" action="" method="post">
-                    <textarea id="freeform" name="message" rows="4" cols="50">Enter text here...</textarea>
+                    <textarea id="freeform" name="message" rows="4" cols="50" placeholder="Please explain your problem here in as much detail as possible"></textarea>
                     <input type="submit" name="submit" value="Reply" class="login-button">
                 </form>
                 ';

@@ -37,8 +37,8 @@ if (!isset($_SESSION['cart'])) {
         $message    = mysqli_real_escape_string($con, $message);
 
         $create_datetime = date("Y-m-d H:i:s");
-        $result = dbQuery("INSERT into `tickets` (user_id, order_number, create_datetime)
-                     VALUES ('".$_SESSION['user']['id']."', '$order_no', '$create_datetime')");
+        $result = dbQuery("INSERT into `tickets` (user_id, order_number, status, create_datetime)
+                     VALUES ('".$_SESSION['user']['id']."', '$order_no', 'pending', '$create_datetime')");
 
         if ($result) {
           echo "<div class='form'>

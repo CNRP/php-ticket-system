@@ -32,27 +32,29 @@ include "auth/session.php";
 
                 $html = "<ul class='orders tickets'>";
                 $tickets = dbQuery("SELECT * FROM `tickets` WHERE user_id='$id' ORDER BY `create_datetime` DESC");
+
+
+                $messages_html = "";
                 while ($data = mysqli_fetch_assoc($tickets)){
+                $ticket_messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=".$data['id']." ORDER BY `create_datetime` DESC");
+                $total_messages = mysqli_num_rows($ticket_messages);
                     $html .= '
                         <li>
                             <div class="ticket-status">
-                                <p class="value status status-'.$data['status'].'">'.($data['status'] == "responded" ? "New response" : $data['status']).'</p>
+                                <p class="value status status-'.$data['status'].'">'.$data['status'].'</p>
+                                <p class="value status-messages">'. $total_messages .' Messages</a>
                             </div>
                             <div class="details">
-                                <div class="ticket-id">
+                                <div class="ticket-info">
                                     <p class="label">Ticket ID:</p>
                                     <a class="value" href="support_ticket.php?id='.$data['id'].'">'.$data['id'].'</a>
                                 </div>
-                                <div class="order-number">
+                                <div class="ticket-info">
                                     <p class="label">Order Number:</p>
                                     <p class="value">'.$data['order_number'].'</p>
                                 </div>
-                                <div class="email">
-                                    <p class="label">Associated User ID:</p>
-                                    <a class="value">'.$data['id'].'</a>
-                                </div>
                                 <div class="buttons">
-                                    <a class="button" href="support_ticket.php?id='.$data['id'].'"> Expand Ticket </a>
+                                    <a class="button" href="support_ticket.php?id='.$data['id'].'"><i class="fa-solid fa-circle-arrow-right"></i></a>
                                 </div>
                             </div>
                         </li>
