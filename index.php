@@ -1,5 +1,4 @@
 <?php
-
 include 'php/utils.php';
 include 'php/navigation.php';
 include "auth/session.php";
@@ -15,12 +14,12 @@ if (!isset($_SESSION['cart'])) {
 ?>
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>PHP Support Ticket Form</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="assets/fa/css/all.min.css">
-  </head>
-  <body>
+    <head>
+        <title>PHP Support Ticket Form</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="assets/fa/css/all.min.css">
+    </head>
+    <body>
     <?php include 'php/navigation.php';?>
 
     <section>
@@ -29,51 +28,21 @@ if (!isset($_SESSION['cart'])) {
     require('php/db.php');
     // When form submitted, insert values into the database.
     if (isset($_GET['submitId'])) {
-        // removes backslashes
-        $order_no    = stripslashes($_REQUEST['order_number']);
-        $order_no    = mysqli_real_escape_string($con, $order_no);
 
-        $message    = stripslashes($_REQUEST['message']);
-        $message    = mysqli_real_escape_string($con, $message);
+        $stmt = $mysqli->prepare("INSERT INTO tickets (user_id, order_number) VALUES (?, ?)");
+        $stmt->bind_param('ss', $_SESSION['user']['id'], $_POST['order_number']);
 
-        $create_datetime = date("Y-m-d H:i:s");
-        $result = dbQuery("INSERT into `tickets` (user_id, order_number, status, create_datetime)
-                     VALUES ('".$_SESSION['user']['id']."', '$order_no', 'pending', '$create_datetime')");
-
-        if ($result) {
-          echo "<div class='form'>
-                <h3>Succesfully added ticket</h3><br/>
-                </div>";
+        // Execute query
+        if ($stmt->execute()) {
+            $ticket_id = $mysqli->insert_id;
+            $stmt = $mysqli->prepare("INSERT INTO ticket_messages (user_id, message, ticket_id) VALUES (?, ?, ?)");
+            $stmt->bind_param('sss', $_SESSION['user']['id'], $_POST['message'], $ticket_id );
+            $stmt->execute();
+            header('Location: account.php');
+            exit;
         } else {
-            echo "<div class='form'>
-                  <h3>couldnt add ticket</h3><br/>
-                  </div>";
-        }
-
-        $result = dbQueryAssoc("SELECT `id` FROM `tickets` WHERE create_datetime='$create_datetime' ");
-
-        if ($result) {
-          echo "<div class='form'>
-                <h3>Succesfully found ticket id ".$result['id']."</h3><br/>
-                </div>";
-        } else {
-            echo "<div class='form'>
-                  <h3>couldnt find ticket</h3><br/>
-                  </div>";
-        }
-
-        $id = $_SESSION['user']['id'];
-        $result = dbQuery("INSERT INTO `ticket_messages`( `user_id`, `message`, `create_datetime`, `ticket_id`)
-                  VALUES ('$id', '$message', '$create_datetime', '".$result['id']. "')");
-
-        if ($result) {
-          echo "<div class='form'>
-                <h3>Succesfully added ticket message to ticket</h3><br/>
-                </div>";
-        } else {
-            echo "<div class='form'>
-                  <h3>couldnt add ticket message ticket</h3><br/>
-                  </div>";
+            // Registration failed
+            $error = 'Failed to submit ticket. Please try again later';
         }
 
     } else {
@@ -93,5 +62,5 @@ if (!isset($_SESSION['cart'])) {
     </section>
 
     <script src="script.js"></script>
-  </body>
+    </body>
 </html>

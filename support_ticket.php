@@ -4,33 +4,33 @@ include "auth/session.php";
 include "php/utils.php";
 require "php/db.php";
 
-$ticket = dbQueryAssoc("SELECT * FROM `tickets` WHERE id='" . $_GET["id"] . "' ORDER BY `create_datetime` DESC");
+$ticket = $mysqli->query("SELECT * FROM `tickets` WHERE id='" . $_GET["id"] . "' ORDER BY `created_at` DESC")->fetch_assoc();
 $user_id = $_SESSION["user"]["id"];
 $ticket_user_id = $ticket["user_id"];
 
-if ($ticket["user_id"] == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) {
+if ($user_id == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) {
     if (isset($_REQUEST["message"])) {
-        $create_datetime = date("Y-m-d H:i:s");
-        $message = stripslashes($_REQUEST["message"]);
-        $message = mysqli_real_escape_string($con, $message);
 
         $_SESSION["user"]["user_type"] == 2
-            ? ($status = "responded")
-            : ($status = "pending");
-        $update = dbQuery("UPDATE `tickets` SET `status`='" .$status ."' WHERE id='" .$_GET["id"] ."'");
+            ? ($ticket_status = "responded")
+            : ($ticket_status = "pending");
+        $update_status = $mysqli->query("UPDATE `tickets` SET `status`='" . $ticket_status ."' WHERE id='" .$_GET["id"] ."'");
 
-        $result = dbQuery("INSERT INTO `ticket_messages`( `user_id`, `message`, `create_datetime`, `ticket_id`) VALUES ('".$_SESSION["user"]["id"]."', '$message', '$create_datetime', '" . $ticket["id"] ."')");
-        header("Location: ../support_ticket.php?id=" . $ticket["id"] . "");
+        $stmt = $mysqli->prepare("INSERT INTO ticket_messages (user_id, message, ticket_id) VALUES (?, ?, ?)");
+        $stmt->bind_param('sss', $_SESSION['user']['id'], $_POST['message'], $ticket["id"] );
+        $stmt->execute();
+
+        header("Location: ../support_ticket.php?id=" . $ticket["id"]);
     }
 
-    $ticket_messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=" . $_GET["id"] . " ORDER BY `create_datetime` DESC");
-    $messages_html = "";
+    $ticket_messages = $mysqli->query("SELECT * FROM `ticket_messages` WHERE ticket_id=" . $_GET["id"] . " ORDER BY `created_at` DESC");
+    $ticket_message_total = mysqli_num_rows($ticket_messages);
+    $ticket_message_count = 1;
 
-    $total_messages = mysqli_num_rows($ticket_messages);
-    $message_count = 1;
     $alert_text = ($ticket["status"] == "closed" ? "This ticket has been marked as closed, if your issue wasnt resolved feel free to reply here or open another ticket." : "");
     $alert_text = ($ticket["status"] == "resolved" ? "This ticket has been marked as resolved, if you need help with another issue, feel free to open another ticket." : $alert_text);
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -64,18 +64,15 @@ if ($ticket["user_id"] == $_SESSION["user"]["id"] or $_SESSION["user"]["user_typ
             <div class="details">
                 <div class="ticket-info">
                     <p class="label">Ticket ID:</p>
-                    <p class="value">
-                        <?php echo $ticket['id'] ?> </p>
+                    <p class="value"><?php echo $ticket['id'] ?></p>
                 </div>
                 <div class="ticket-info">
                     <p class="label">Order Number:</p>
-                    <p class="value">
-                        <?php echo $ticket['order_number']?> </p>
+                    <p class="value"><?php echo $ticket['order_number']?></p>
                 </div>
                 <div class="ticket-info">
                     <p class="label">User ID:</p>
-                    <p class="value">
-                        <?php echo $ticket['user_id']?> </p>
+                    <p class="value"><?php echo $ticket['user_id']?></p>
                 </div>
             </div>
 
@@ -88,32 +85,31 @@ if ($ticket["user_id"] == $_SESSION["user"]["id"] or $_SESSION["user"]["user_typ
                     </div>
                 <?php }
 
-                while ($messagedata = mysqli_fetch_assoc($ticket_messages)) {
-                    $id = $messagedata["user_id"];
-                    $userdata = dbQueryAssoc("SELECT `id`, `first_name`, `last_name`, `email` FROM `users` WHERE id='$id'");
-                    $date = date_parse($messagedata["create_datetime"]);
+                while ($message_data = mysqli_fetch_assoc($ticket_messages)) {
+                    $id = $message_data["user_id"];
+                    $author_user_data =  $mysqli->query("SELECT `id`, `first_name`, `last_name`, `email` FROM `users` WHERE id='$id'")->fetch_assoc();
+                    $message_date = date_parse($message_data["created_at"]);
 
-                    if ($message_count == $total_messages) {
-                    $date = date_parse($ticket["create_datetime"]);
+                    if ($ticket_message_total == $ticket_message_count) {
                     ?>
                         <div class='<?php echo ($_SESSION["user"]["user_type"] == 2 ? ($class = "poster") : ($class = "replier")) ?>'>
                             <p class='author'>Automated Response <i class='fa-solid fa-robot'></i></p>
                             <p class='value'>Hey. Thanks for contacting us, we will try our hardest to get back to you in a timely manner. Usually within a few hours!</p>
                             <small>
-                                <p class='datetime'><?php echo $date["hour"] . ":" . ($date["minute"] < 10 ? "0" . $date["minute"] : $date["minute"]) . " - " . ($date["day"] < 10 ? "0" . $date["day"] : $date["day"]) . "/" . ($date["month"] < 10 ? "0" . $date["month"] : $date["month"]) ?> </p>
+                                <p class='datetime'><?php echo $message_date["hour"] . ":" . ($message_date["minute"] < 10 ? "0" . $message_date["minute"] : $message_date["minute"]) . " - " . ($message_date["day"] < 10 ? "0" . $message_date["day"] : $message_date["day"]) . "/" . ($message_date["month"] < 10 ? "0" . $message_date["month"] : $message_date["month"]) ?> </p>
                             </small>
                         </div>
 
                     <?php
                     }
-                    $message_count++;
+                    $ticket_message_count++;
                     ?>
 
                 <div class='<?php echo ($id == $_SESSION["user"]["id"]? ($class = "poster"): ($class = "replier")) ?>'>
-                    <p class='author'><?php echo $userdata["first_name"] ." " .substr($userdata["last_name"], 0, 1)?> </p>
-                    <p class='value'><?php echo $messagedata["message"] ?></p>
+                    <p class='author'><?php echo $author_user_data["first_name"] ." " .substr($author_user_data["last_name"], 0, 1)?> </p>
+                    <p class='value'><?php echo $message_data["message"] ?></p>
                     <small>
-                        <p class='datetime'><?php echo $date["hour"] . ":" . ($date["minute"] < 10 ? "0" . $date["minute"] : $date["minute"]) . " - " . ($date["day"] < 10 ? "0" . $date["day"] : $date["day"]) ."/" . ($date["month"] < 10 ? "0" . $date["month"] : $date["month"]) ?></p>
+                        <p class='datetime'><?php echo $message_date["hour"] . ":" . ($message_date["minute"] < 10 ? "0" . $message_date["minute"] : $message_date["minute"]) . " - " . ($message_date["day"] < 10 ? "0" . $message_date["day"] : $message_date["day"]) ."/" . ($message_date["month"] < 10 ? "0" . $message_date["month"] : $message_date["month"]) ?></p>
                     </small>
                 </div>
                 <?php } ?>

@@ -8,38 +8,44 @@
 </head>
 <body>
 <?php
+    include '../php/utils.php';
     include '../php/navigation.php';
     require('../php/db.php');
-    // When form submitted, insert values into the database.
-    if (isset($_REQUEST['email'])) {
-        // removes backslashes
-        $first_name = stripslashes($_REQUEST['first_name']);
-        //escapes special characters in a string
-        $first_name = mysqli_real_escape_string($con, $first_name);
 
-        $last_name = stripslashes($_REQUEST['last_name']);
-        $last_name = mysqli_real_escape_string($con, $last_name);
+    if (isset($_POST['email'])){
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $confirm_password = $_POST['confirm_password'];
 
-        $email    = stripslashes($_REQUEST['email']);
-        $email    = mysqli_real_escape_string($con, $email);
-
-        $password = stripslashes($_REQUEST['password']);
-        $password = mysqli_real_escape_string($con, $password);
-
-        $create_datetime = date("Y-m-d H:i:s");
-
-        $result = dbQuery("INSERT into `users` (first_name, last_name, password, email, create_datetime)
-                     VALUES ('$first_name', '$last_name', '" . md5($password) . "', '$email', '$create_datetime')");
-        if ($result) {
-            echo "<div class='form'>
-                  <h3>You are registered successfully.</h3><br/>
-                  <p class='link'>Click here to <a href='login.php'>Login</a></p>
-                  </div>";
+        // Validate user input
+        if (empty($first_name) || empty($last_name) ||empty($email) || empty($password) || empty($confirm_password)) {
+            $error = 'All fields are required';
+        } elseif ($password != $confirm_password) {
+            $error = 'Passwords do not match';
         } else {
-            echo "<div class='form'>
-                  <h3>Required fields are missing.</h3><br/>
-                  <p class='link'>Click here to <a href='registration.php'>registration</a> again.</p>
-                  </div>";
+            // Hash password
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+            // Prepare SQL statement
+            $stmt = $mysqli->prepare("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
+
+            // Bind parameters
+            $stmt->bind_param('ssss', $first_name, $last_name, $email, $hashed_password);
+
+            // Execute query
+            if ($stmt->execute()) {
+                // Registration successful
+                header('Location: ../account.php');
+                exit;
+            } else {
+                // Registration failed
+                $error = 'Registration failed. Please try again later.';
+            }
+
+            // Close database connection
+            $mysqli->close();
         }
     } else {
 ?>
@@ -49,6 +55,7 @@
         <input type="text" class="login-input" name="last_name" placeholder="Last name" required />
         <input type="text" class="login-input" name="email" placeholder="Email Adress">
         <input type="password" class="login-input" name="password" placeholder="Password">
+        <input type="password" class="login-input" name="confirm_password" placeholder="Password">
         <input type="submit" name="submit" value="Register" class="login-button">
         <p class="link"><a href="login.php">Click to Login</a></p>
     </form>

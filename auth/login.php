@@ -14,33 +14,50 @@
     session_start();
     // When form submitted, check and create user session.
     if (isset($_POST['email'])) {
-        $email = stripslashes($_REQUEST['email']);    // removes backslashes
-        $email = mysqli_real_escape_string($con, $email);
-        $password = stripslashes($_REQUEST['password']);
-        $password = mysqli_real_escape_string($con, $password);
-        // Check user is exist in the database
-        $result = dbQuery("SELECT * FROM `users` WHERE email='$email'
-                     AND password='" . md5($password) . "'");
-        $rows = mysqli_num_rows($result);
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-        if ($rows == 1) {
-            $data = mysqli_fetch_assoc($result);
-            $_SESSION['user'] = [
-                'id' => $data['id'],
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'email' => $data['email'],
-                'create_datetime' => $data['create_datetime'],
-                'user_type' => $data['user_type'],
-            ];
-            // Redirect to user dashboard page
-            header("Location: ../account.php");
+        // Prepare SQL statement
+        $stmt = $mysqli->prepare("SELECT * FROM users WHERE email = ?");
+
+        // Bind parameters
+        $stmt->bind_param('s', $email);
+
+        // Execute query
+        $stmt->execute();
+
+        // Get query result
+        $result = $stmt->get_result();
+
+        // Check if user exists
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            $hashed_password = $row['password'];
+            // Verify password
+            if (password_verify($password, $hashed_password)) {
+                // Login successful
+                $_SESSION['user'] = [
+                    'id' => $row['id'],
+                    'first_name' => $row['first_name'],
+                    'last_name' => $row['last_name'],
+                    'email' => $row['email'],
+                    'created_at' => $row['created_at'],
+                    'user_type' => $row['user_type'],
+                ];
+                header("Location: ../account.php");
+                exit;
+            } else {
+                // Invalid password
+                $error = 'Invalid password';
+            }
         } else {
-            echo "<div class='form'>
-                  <h3>Incorrect Username/password.</h3><br/>
-                  <p class='link'>Click here to <a href='login.php'>Login</a> again.</p>
-                  </div>";
+            // User not found
+            $error = 'Invalid username';
         }
+
+        // Close database connection
+        $mysqli->close();
+
     } else {
 ?>
     <form class="auth" method="post" name="login">

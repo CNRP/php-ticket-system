@@ -1,6 +1,13 @@
 <?php
-//include auth_session.php file on all user panel pages
 include "auth/session.php";
+require 'php/db.php';
+require 'php/utils.php';
+
+    $id = $_SESSION['user']['id'];
+    if (isset($id)) {
+        $tickets = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
+    }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,54 +22,51 @@ include "auth/session.php";
     <div class="content">
         <p>Hey, <?php echo $_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']; ?>!</p>
         <p>Email: <?php echo $_SESSION['user']['email'] ?></p>
-        <p>Account Created: <?php echo $_SESSION['user']['create_datetime']?></p>
+        <p>Account Created: <?php echo $_SESSION['user']['created_at']?></p>
         <br>
-        <?php if($_SESSION['user']['user_type']){ ?>
+        <?php if($_SESSION['user']['user_type'] == 2){ ?>
             <a href="tickets.php" class="button">All Tickets</a>
         <?php } ?>
-        <!-- <p>You are now user dashboard page.</p> -->
 
         <h2>Your support tickets</h2>
         <?php
-            require 'php/db.php';
-            require 'php/utils.php';
-            // When form submitted, check and create user session.
-            $id = $_SESSION['user']['id'];
-            if (isset($id)) {
-
-                $html = "<ul class='orders tickets'>";
-                $tickets = dbQuery("SELECT * FROM `tickets` WHERE user_id='$id' ORDER BY `create_datetime` DESC");
-
-
-                $messages_html = "";
-                while ($data = mysqli_fetch_assoc($tickets)){
-                $ticket_messages = dbQuery("SELECT * FROM `ticket_messages` WHERE ticket_id=".$data['id']." ORDER BY `create_datetime` DESC");
-                $total_messages = mysqli_num_rows($ticket_messages);
-                    $html .= '
-                        <li>
-                            <div class="ticket-status">
-                                <p class="value status status-'.$data['status'].'">'.$data['status'].'</p>
-                                <p class="value status-messages">'. $total_messages .' Messages</a>
-                            </div>
-                            <div class="details">
-                                <div class="ticket-info">
-                                    <p class="label">Ticket ID:</p>
-                                    <a class="value" href="support_ticket.php?id='.$data['id'].'">'.$data['id'].'</a>
-                                </div>
-                                <div class="ticket-info">
-                                    <p class="label">Order Number:</p>
-                                    <p class="value">'.$data['order_number'].'</p>
-                                </div>
-                                <div class="buttons">
-                                    <a class="button" href="support_ticket.php?id='.$data['id'].'"><i class="fa-solid fa-circle-arrow-right"></i></a>
-                                </div>
-                            </div>
-                        </li>
-                    ';
-                }
-                echo $html .= "</ul>";
-            }
+        while ($ticket = mysqli_fetch_assoc($tickets)){
+            $total_ticket_messages = $mysqli->query("SELECT COUNT(*) FROM `ticket_messages` WHERE ticket_id=".$ticket['id']." ORDER BY `created_at` ASC")->fetch_assoc()['COUNT(*)'];
+            $ticket_date = date_parse($ticket['created_at']);
         ?>
+        <ul class='tickets orders'>
+            <li>
+                <div class="ticket-status">
+                    <p class="value status status-<?php echo $ticket['status'] ?>"><?php echo $ticket['status'] ?></p>
+                    <div class="right">
+                        <p class="value status-messages">
+                            <?php echo $total_ticket_messages ?> Messages
+                        </p>
+                        <p class="value status-messages">
+                            <?php echo ($ticket_date['day']< 10 ? '0'.$ticket_date['day'] : $ticket_date['day']). "/".($ticket_date[ 'month'] < 10 ? '0'.$ticket_date['month'] : $ticket_date['month']) ?>
+                        </p>
+                    </div>
+                </div>
+                <div class="details">
+                    <div class="ticket-info">
+                        <p class="label">Ticket ID:</p>
+                        <a class="value" href="support_ticket.php?id=<?php echo $ticket['id'] ?>"><?php echo $ticket['id'] ?></a>
+                    </div>
+                    <div class="ticket-info">
+                        <p class="label">User ID:</p>
+                        <a href="account.php?user="<?php echo $ticket['user_id'] ?>" class="value"> <?php echo $ticket['user_id'] ?></a>
+                    </div>
+                    <div class="ticket-info">
+                        <p class="label">Order Number:</p>
+                        <p class="value"><?php echo $ticket['order_number'] ?></p>
+                    </div>
+                    <div class="buttons">
+                        <a class="button" href="support_ticket.php?id=<?php echo $ticket['id'] ?>"><i class="fa-solid fa-circle-arrow-right"></i></a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <?php } ?>
         <p><a href="/auth/logout.php">Logout</a></p>
     </div>
 </body>

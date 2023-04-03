@@ -5,16 +5,17 @@ CREATE TABLE IF NOT EXISTS `users` (
  `first_name` varchar(50) NOT NULL,
  `last_name` varchar(50) NOT NULL,
  `email` varchar(50) NOT NULL,
- `password` varchar(50) NOT NULL,
- `user_id` int(11) DEFAULT '1',
- `create_datetime` datetime NOT NULL,
- PRIMARY KEY (`id`)
+ `password` varchar(255) NOT NULL,
+ `user_type` int(11) DEFAULT '1',
+ `created_at` DATETIME DEFAULT NOW(),
+ PRIMARY KEY (`id`),
+ UNIQUE KEY (`email`)
 );
 
 CREATE TABLE IF NOT EXISTS `tickets` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `order_number` varchar(50) NOT NULL,
- `create_datetime` datetime NOT NULL,
+ `created_at` DATETIME DEFAULT NOW(),
  `status` varchar(50) NOT NULL DEFAULT 'pending',
  `user_id` INT,
  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
@@ -24,10 +25,17 @@ CREATE TABLE IF NOT EXISTS `tickets` (
 CREATE TABLE IF NOT EXISTS `ticket_messages` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `message` varchar(500) NOT NULL,
- `create_datetime` datetime NOT NULL,
+ `created_at` DATETIME DEFAULT NOW(),
  `ticket_id` INT,
  `user_id` INT,
  FOREIGN KEY (`ticket_id`) REFERENCES `tickets`(`id`),
  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE ticket_numbers (
+  ticket_number VARCHAR(10) NOT NULL,
+  ticket_id INT(11) NOT NULL,
+  PRIMARY KEY (ticket_number),
+  FOREIGN KEY (ticket_id) REFERENCES tickets(id)
 );
