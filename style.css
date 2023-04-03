@@ -338,6 +338,27 @@ h3 {
     padding: 1em;
 }
 
+.update-status a{
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--colour);
+    text-decoration: none;
+    position: relative;
+    padding: 0.5em 1em;
+    border: 2px solid var(--colour);
+}
+
+.update-status a::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--colour);
+    opacity: 0.1;
+}
+
 .status-pending{
     --colour: orange;
 }
