@@ -49,18 +49,84 @@
         }
     } else {
 ?>
-    <form class="auth" action="" method="post">
-        <h1 class="login-title">Registration</h1>
-        <input type="text" class="login-input" name="first_name" placeholder="First name" required />
-        <input type="text" class="login-input" name="last_name" placeholder="Last name" required />
-        <input type="text" class="login-input" name="email" placeholder="Email Adress">
-        <input type="password" class="login-input" name="password" placeholder="Password">
-        <input type="password" class="login-input" name="confirm_password" placeholder="Password">
+
+    
+    <div class="form-container">
+        <div class="header">
+            <i class="fa-solid fa-file-invoice"></i>
+        </div>
+        <form id="register" class="auth" action="" method="post">
+        <h1 class="title">Register Your Account</h1>
+        <div class="input-group">
+            <input class="first_name_input" type="text" name="first_name" placeholder="First name" required />
+            <input type="text" name="last_name" placeholder="Last name" required />
+        </div>
+        <input type="text" id="email" name="email" placeholder="Email Adress">
+        <div class="input-group">
+            <input class="password_input" type="password" name="password" placeholder="Password">
+            <input type="password" name="confirm_password" placeholder="Password">
+        </div>
         <input type="submit" name="submit" value="Register" class="login-button">
         <p class="link"><a href="login.php">Click to Login</a></p>
-    </form>
+        </form>
+    </div>
 <?php
     }
 ?>
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    var form = document.getElementById('register');
+    form.addEventListener("submit", function(event) {
+        // Get the password and confirm password inputs
+        console.log("Hello")
+        var passwordInput = document.getElementsByName('password')[0].value;
+        var confirmPasswordInput = document.getElementsByName('confirm_password')[0].value;
+
+
+        // Check if the password and confirm password inputs are equal
+        if (passwordInput !== confirmPasswordInput) {
+
+            // If they're not equal, prevent the form from submitting
+            event.preventDefault();
+        alert("Password and confirm password must match");
+        }
+
+        if(!validatePassword(passwordInput)){
+                alert("Password must be atleast 6 characters, 1 number 1 special character");
+                event.preventDefault();
+        }
+
+    });
+});
+
+var emailInput = document.getElementById("email");
+
+// Add an event listener to the input's blur event
+emailInput.addEventListener("blur", function() {
+  // Validate the input value
+  if (!validateEmail(emailInput.value)) {
+    
+    emailInput.focus();
+  }
+});
+
+function validatePassword(password) {
+  // Define the regular expression to test the password against
+  var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])\d{6}(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/;
+
+  // Test the password against the regular expression
+  return passwordRegex.test(password);
+}
+
+function validateEmail(email) {
+  // Regular expression for email validation
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Test the input value against the regular expression
+  return emailRegex.test(email);
+}
+</script>
+
 </body>
 </html>

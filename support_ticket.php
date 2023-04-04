@@ -7,6 +7,20 @@ require "php/db.php";
 $ticket = $mysqli->query("SELECT * FROM `tickets` WHERE id='" . $_GET["id"] . "' ORDER BY `created_at` DESC")->fetch_assoc();
 $user_id = $_SESSION["user"]["id"];
 $ticket_user_id = $ticket["user_id"];
+$url = "?id=" . $ticket['id'];
+
+if(isset($_GET["status_set"]) && $_SESSION["user"]["user_type"] == 2){
+    $stmt = $mysqli->prepare("UPDATE `tickets` SET `status`=? WHERE `id`=?");
+    $stmt->bind_param("si", $_GET["status_set"], $_GET["id"]);
+    // Execute query
+    if ($stmt->execute()) {
+        header("Location: ../support_ticket.php".$url);
+        exit;
+    } else {
+        // Registration failed
+        $error = 'Failed to change status of ticket. Please try again later';
+    }
+}
 
 if ($user_id == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) {
     if (isset($_REQUEST["message"])) {
@@ -49,10 +63,10 @@ if ($user_id == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) 
     <div class="content">
         <div class="update-status">
             <h4>Mark as:</h4>
-            <a href="?status_set=pending" class="status-pending">Pending</a>
-            <a href="?status_set=pending" class="status-responded">Responded</a>
-            <a href="?status_set=pending" class="status-resolved">Resolved</a>
-            <a href="?status_set=pending" class="status-closed">Closed</a>
+            <a href="<?php echo $url?>&status_set=pending" class="status-pending">Pending</a>
+            <a href="<?php echo $url?>&status_set=responded" class="status-responded">Responded</a>
+            <a href="<?php echo $url?>&status_set=resolved" class="status-resolved">Resolved</a>
+            <a href="<?php echo $url?>&status_set=closed" class="status-closed">Closed</a>
         </div>
         <h1>Your support ticket</h1>
         <div class="ticket-status">

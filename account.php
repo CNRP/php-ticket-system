@@ -6,6 +6,13 @@ require 'php/utils.php';
     $id = $_SESSION['user']['id'];
     if (isset($id)) {
         $tickets = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
+        $to = "connorefc97@gmail.com";
+        $subject = "Order Confirmation";
+        $message = "Thank you for your order! Your order number is XXX.";
+        $headers = "From: yourname@example.com\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+        mail($to, $subject, $message, $headers);
     }
 
 ?>
