@@ -49,27 +49,31 @@
         }
     } else {
 ?>
-
-    
-    <div class="form-container">
-        <div class="header">
-            <i class="fa-solid fa-file-invoice"></i>
+    <div class="page-container">
+        <div class="form-container">
+            <div class="header">
+                <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <form id="register" class="auth" action="" method="post">
+            <h1 class="title">Register Your Account</h1>
+            <div class="input-group">
+                <input class="first_name_input" type="text" name="first_name" placeholder="First name" required />
+                <input type="text" name="last_name" placeholder="Last name" required />
+            </div>
+            <input type="text" id="email" name="email" placeholder="Email Adress">
+            <label id="email_alert" class="alert hidden" for="password">Email not valid format</label>
+            <div class="input-group">
+                <input class="password_input" type="password" name="password" id="password" placeholder="Password">
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Password">
+            </div>
+            <label id="password_alert_1" class="alert hidden" for="password">Passwords must match</label>
+            <label id="password_alert_2" class="alert hidden" for="password">Must be atleast 6 characters, 1 uppercase 1 number and a special character</label>
+            <input type="submit" name="submit" value="Register" class="login-button">
+            <p class="link"><a href="login.php">Have an account? Click here to Login.</a></p>
+            </form>
         </div>
-        <form id="register" class="auth" action="" method="post">
-        <h1 class="title">Register Your Account</h1>
-        <div class="input-group">
-            <input class="first_name_input" type="text" name="first_name" placeholder="First name" required />
-            <input type="text" name="last_name" placeholder="Last name" required />
-        </div>
-        <input type="text" id="email" name="email" placeholder="Email Adress">
-        <div class="input-group">
-            <input class="password_input" type="password" name="password" placeholder="Password">
-            <input type="password" name="confirm_password" placeholder="Password">
-        </div>
-        <input type="submit" name="submit" value="Register" class="login-button">
-        <p class="link"><a href="login.php">Click to Login</a></p>
-        </form>
     </div>
+    
 <?php
     }
 ?>
@@ -98,22 +102,59 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
     });
+
+    var email_input = document.getElementById("email");
+    var password_input = document.getElementById("password");
+    var password_confirm_input = document.getElementById("confirm_password");
+
+    // password_input.addEventListener("blur", function() {
+    //   var password_alert = document.getElementById("password_alert_1");
+    //   console.log("YTOOOO")
+    //   // Validate the input value
+    //   if (password_input.value != password_confirm_input.value) {
+    //     password_alert.classList.remove('hidden');
+    //   }else{
+    //     password_alert.classList.add('hidden');
+    //   }
+    // });
+    password_confirm_input.addEventListener("blur", function() {
+        var password_alert = document.getElementById("password_alert_1");
+        var password_alert2 = document.getElementById("password_alert_2");
+
+        // Validate the input value
+        if (password_input.value != password_confirm_input.value) {
+            password_alert.classList.remove('hidden');
+        }else{
+            password_alert.classList.add('hidden');
+        }
+
+        console.log(validatePassword("MyPassword123!"))
+        if (!validatePassword(password_input.value)) {
+            password_alert2.classList.remove('hidden');
+        }else{
+            password_alert2.classList.add('hidden');
+        }
+    });
+    // Add an event listener to the input's blur event
+    email_input.addEventListener("blur", function() {
+
+        var email_alert = document.getElementById("email_alert");
+        // Validate the input value
+        // console.log(validateEmail("connorefc@hotmail.com"))
+
+        if (!validateEmail(email_input.value)) {
+            email_alert.classList.remove('hidden');
+        }else{
+            email_alert.classList.add('hidden');
+        }
+    });
+
 });
 
-var emailInput = document.getElementById("email");
-
-// Add an event listener to the input's blur event
-emailInput.addEventListener("blur", function() {
-  // Validate the input value
-  if (!validateEmail(emailInput.value)) {
-    
-    emailInput.focus();
-  }
-});
 
 function validatePassword(password) {
   // Define the regular expression to test the password against
-  var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])\d{6}(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*$/;
+  var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[a-zA-Z]).{6,}$/;
 
   // Test the password against the regular expression
   return passwordRegex.test(password);
