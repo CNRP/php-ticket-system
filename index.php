@@ -46,15 +46,22 @@ if (!isset($_SESSION['cart'])) {
         }
 
     } else {
-?>
-    <form class="auth" action="?submitId=true" method="post">
-        <h1 class="login-title">Submit a support ticket</h1>
-        <input type="text" class="login-input" name="order_number" placeholder="Order number" />
-        <input type="text" class="login-input" name="email" placeholder="Email Adress">
-        <textarea id="freeform" name="message" rows="4" cols="50">Enter text here...</textarea>
-        <input type="submit" name="submit" value="Register" class="login-button">
-        <p class="link"><a href="account.php">Submit Ticket</a></p>
-    </form>
+?>    
+<div class="page-container">
+    <div class="form-container">
+        <div class="header">
+            <i class="fa-solid fa-envelope"></i>
+        </div>
+        <form class="auth" action="?submitId=true" method="post">
+            <h1 class="login-title">Submit a support ticket</h1>
+            <input type="text" class="login-input" name="order_number" placeholder="Order number" />
+            <input type="text" id="email" class="login-input" value="<?php echo $_SESSION['user']['email'] ?>" name="email" placeholder="Email Adress">
+            <textarea id="freeform" name="message" rows="4" cols="50" placeholder="Enter text here..."></textarea>
+            <input type="submit" name="submit" value="Submit Ticket" class="form-button">
+            <p class="link"><a href="account.php">Back to account</a></p>
+        </form>
+    </div>
+</div>
 <?php
     }
 ?>

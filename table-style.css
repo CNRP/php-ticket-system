@@ -1,0 +1,31 @@
+table{
+    width: 100%;
+
+}
+
+table .button{
+    background-color: white;
+}
+
+tr, th {
+    padding: 1em 2em;
+    text-align: left;
+    border-radius: 5px;
+    border: 0px;
+    border-bottom: 2px solid rgb(197, 197, 197);
+}
+
+td{
+    padding: 0;
+    border-radius: 0px;
+    border-bottom: 1px solid rgb(197, 197, 197);
+}
+
+td:nth-child(2n){
+    border: 0px;
+    background-color:#dbdbdb;
+}
+
+table .buttons{
+    display: flex;
+}

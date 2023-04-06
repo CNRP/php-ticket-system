@@ -1,5 +1,6 @@
 :root{
     --button-color: rgb(63 113 207);
+    --gradient: linear-gradient(45deg, rgb(4, 7, 41), #001e57);
 }
 
 *{
@@ -9,7 +10,7 @@
 body{
     margin: 0;
     margin-top: 6em;
-    background-color: rgb(196, 196, 196);
+    background-color: rgb(221, 221, 221);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
@@ -69,7 +70,7 @@ body{
 }
 
 .form-container{
-    --colour: #09162e;
+    --colour: var(--gradient);
     display: block;
     margin-inline: auto;
     width: 800px;
@@ -79,7 +80,7 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--colour);
+    background: var(--colour);
     height: 9em;
     border-radius: 10px 10px 0px 0px;
 }
@@ -126,12 +127,13 @@ body{
     background-color: rgb(255, 204, 110);
 }
 
-.auth h1{
+h1, h2, h3, h4{
     margin-top: 1em;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
-.auth input{   
+
+ input, textarea{   
     border-radius: 5px;
     padding: 0.5em 1em;
     margin-block: 0.4em;
@@ -146,27 +148,60 @@ body{
     margin-right: 2em;
 }
 
+.auth #email{
+    
+}
 
-.auth input:hover{
+input:hover{
     background-color: #e9e9e9;
     border-radius: 5px;
     border: 0px;
     border-bottom: 2px solid rgb(197, 197, 197);
 }
 
-.auth .login-button{
+textarea{
+    resize: vertical;
+}
+
+.form{
+    --colour: linear-gradient(45deg, rgb(4, 7, 41), #001e57);;
+}
+
+form.search{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+form.search h1{
+    width: 100%;
+}
+
+form.search input{
+    font-size: 1rem;
+    width: calc(80% - 1.5em);
+}
+
+form.search .form-button{
+    width: 20%;
+}
+
+.form-button{
     padding: 1em;
+    color: white;
+    background: var(--colour);
+}
+
+.auth .form-button{
     margin-top: 2em;
-    color: white;
-    background-color: var(--colour);
 }
 
-.auth .login-button:hover{
+.form-button:hover{
     color: white;
-    background-color: rgb(12, 33, 97);
+    background: rgb(12, 33, 97);
 }
 
-.auth .input-group{
+.input-group{
     display: flex;
 }
 
@@ -188,13 +223,13 @@ h3 {
 .content{
     padding: 3em;
     margin-inline: auto;
-    background-color: rgb(231, 231, 231);
+    background-color: rgb(255, 255, 255);
     width: 60%;
     margin-bottom: 3em;
 }
 
 .content h2{
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
 .orders{
@@ -208,16 +243,16 @@ h3 {
     align-items: center;
 }
 
-.orders .button{
+.button{
     border: 0;
-    border-radius: 0;
+    border-radius: 5px;
     color: rgb(255, 255, 255);
-    background-color: var(--button-color);
+    background: var(--gradient);
 }
 
-.orders .button:hover{
+.button:hover{
     color: rgb(255, 255, 255);
-    background-color: rgb(95, 95, 95);
+    background: rgb(23, 52, 138);
 }
 
 
@@ -324,9 +359,11 @@ h3 {
 }
 
 .orders .ticket-info .value{
+    text-decoration: none;
+    font-weight: bold;
     margin-block: auto;
-    background-color: rgb(172, 172, 172);
-    color: white;
+    background-color: rgb(228, 228, 228);
+    color: black;
     border-radius: 5px;
     padding: 0.4em 1em;
 }

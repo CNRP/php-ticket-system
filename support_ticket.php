@@ -130,7 +130,7 @@ if ($user_id == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) 
             </div>
             <form class="form" action="" method="post">
                 <textarea id="freeform" name="message" rows="4" cols="50" placeholder="Please explain your problem here in as much detail as possible"></textarea>
-                <input type="submit" name="submit" value="Reply" class="login-button">
+                <input type="submit" name="submit" value="Reply" class="form-button">
             </form>
         </div>
         <p><a href="/auth/logout.php">Logout</a></p>

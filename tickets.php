@@ -16,54 +16,53 @@ require 'php/utils.php';
     <title>Dashboard - Client area</title>
     <link rel="stylesheet" href="assets/fa/css/all.min.css">
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="table-style.css" />
 </head>
 
 <body>
     <?php include 'php/navigation.php'; ?>
     <div class="content">
-        <p>Hey,
-            <?php echo $_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']; ?>!</p>
+        <h2>Hey, <?php echo $_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']; ?>!</h2>
+
+        <form class="form search" method="post" name="login">
+            <h1 class="login-title">Search for ticket</h1>
+            <input type="text" class="login-input" name="value" placeholder="Order Number, Email, Ticket ID, User ID" autofocus="true"/>
+            <input type="submit" value="Search" name="submit" class="form-button"/>
+        </form>
         <br>
+
         <h2>All Support tickets</h2>
+        <table>
+            <thead>
+                <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Subject</th>
+                <th>Created By</th>
+                <th>Status</th>
+                <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
         <?php
         while ($data = mysqli_fetch_assoc($tickets)){
             $total_ticket_messages = $mysqli->query("SELECT COUNT(*) FROM `ticket_messages` WHERE ticket_id=".$data['id']." ORDER BY `created_at` ASC")->fetch_assoc()['COUNT(*)'];
             $date = date_parse($data['created_at']);
         ?>
-        <ul class='tickets orders'>
-            <li>
-                <div class="ticket-status">
-                    <p class="value status status-<?php echo $data['status'] ?>"><?php echo $data['status'] ?></p>
-                    <div class="right">
-                        <p class="value status-messages">
-                            <?php echo $total_ticket_messages ?> Messages
-                        </p>
-                        <p class="value status-messages">
-                            <?php echo ($date['day']< 10 ? '0'.$date['day'] : $date['day']). "/".($date['month'] < 10 ? '0'.$date['month'] : $date['month'])  ?>
-                        </p>
-                    </div>
-                </div>
-                <div class="details">
-                    <div class="ticket-info">
-                        <p class="label">Ticket ID:</p>
-                        <a class="value" href="support_ticket.php?id=<?php echo $data['id'] ?>"><?php echo $data['id'] ?></a>
-                    </div>
-                    <div class="ticket-info">
-                        <p class="label">User ID:</p>
-                        <a href="account.php?user="<?php echo $data['user_id'] ?>" class="value"> <?php echo $data['user_id'] ?></a>
-                    </div>
-                    <div class="ticket-info">
-                        <p class="label">Order Number:</p>
-                        <p class="value"><?php echo $data['order_number'] ?></p>
-                    </div>
-                    <div class="buttons">
-                        <a class="button" href="support_ticket.php?id=<?php echo $data['id'] ?>"><i class="fa-solid fa-circle-arrow-right"></i></a>
-                    </div>
-                </div>
-            </li>
-        </ul>
+                <tr>
+                    <td><?php echo $data['order_number'] ?></td>
+                    <td><?php echo ($date['day']< 10 ? '0'.$date['day'] : $date['day']). "/".($date['month'] < 10 ? '0'.$date['month'] : $date['month'])  ?></td>
+                    <td>Category</td>
+                    <td>Subject</td>
+                    <td><?php echo $data['user_id'] ?></td>
+                    <td class="<?php echo $data['status'] ?>"><?php echo $data['status'] ?></td>
+                    <td class="buttons"><a class="button">Edit</a><a class="button">Delete</a></td>
+                </tr>
         <?php } ?>
-        <p><a href="/auth/logout.php">Logout</a></p>
+            </tbody>
+        </table>
+        <a href="/auth/logout.php" class="button">Logout</a>
     </div>
 </body>
 </html>

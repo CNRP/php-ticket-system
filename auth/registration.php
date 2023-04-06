@@ -52,7 +52,7 @@
     <div class="page-container">
         <div class="form-container">
             <div class="header">
-                <i class="fa-solid fa-file-invoice"></i>
+            <i class="fa-solid fa-address-card"></i>
             </div>
             <form id="register" class="auth" action="" method="post">
             <h1 class="title">Register Your Account</h1>
@@ -68,7 +68,7 @@
             </div>
             <label id="password_alert_1" class="alert hidden" for="password">Passwords must match</label>
             <label id="password_alert_2" class="alert hidden" for="password">Must be atleast 6 characters, 1 uppercase 1 number and a special character</label>
-            <input type="submit" name="submit" value="Register" class="login-button">
+            <input type="submit" name="submit" value="Register" class="form-button">
             <p class="link"><a href="login.php">Have an account? Click here to Login.</a></p>
             </form>
         </div>

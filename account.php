@@ -4,16 +4,18 @@ require 'php/db.php';
 require 'php/utils.php';
 
     $id = $_SESSION['user']['id'];
-    if (isset($id)) {
-        $tickets = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
-        $to = "connorefc97@gmail.com";
-        $subject = "Order Confirmation";
-        $message = "Thank you for your order! Your order number is XXX.";
-        $headers = "From: yourname@example.com\r\n";
-        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $tickets = $mysqli->query("SELECT * FROM `tickets` WHERE user_id=$id ORDER BY `status`='pending' DESC, `created_at` ASC");
+    console_log($tickets->num_rows);
+    // if (isset($id)) {
+    //     $tickets = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
+    //     $to = "connorefc97@gmail.com";
+    //     $subject = "Order Confirmation";
+    //     $message = "Thank you for your order! Your order number is XXX.";
+    //     $headers = "From: yourname@example.com\r\n";
+    //     $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
-        mail($to, $subject, $message, $headers);
-    }
+    //     mail($to, $subject, $message, $headers);
+    // }
 
 ?>
 <!DOCTYPE html>
@@ -27,9 +29,9 @@ require 'php/utils.php';
 <body>
     <?php include 'php/navigation.php'; ?>
     <div class="content">
-        <p>Hey, <?php echo $_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']; ?>!</p>
-        <p>Email: <?php echo $_SESSION['user']['email'] ?></p>
-        <p>Account Created: <?php echo $_SESSION['user']['created_at']?></p>
+        <h2>Hey, <?php echo $_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']; ?>!</h2>
+        <h4>Email: <?php echo $_SESSION['user']['email'] ?></h4>
+        <h4>Account Created: <?php echo $_SESSION['user']['created_at']?></h4>
         <br>
         <?php if($_SESSION['user']['user_type'] == 2){ ?>
             <a href="tickets.php" class="button">All Tickets</a>
@@ -37,6 +39,9 @@ require 'php/utils.php';
 
         <h2>Your support tickets</h2>
         <?php
+        if(1){
+
+        }
         while ($ticket = mysqli_fetch_assoc($tickets)){
             $total_ticket_messages = $mysqli->query("SELECT COUNT(*) FROM `ticket_messages` WHERE ticket_id=".$ticket['id']." ORDER BY `created_at` ASC")->fetch_assoc()['COUNT(*)'];
             $ticket_date = date_parse($ticket['created_at']);
@@ -74,7 +79,7 @@ require 'php/utils.php';
             </li>
         </ul>
         <?php } ?>
-        <p><a href="/auth/logout.php">Logout</a></p>
+        <a class="button" href="/auth/logout.php">Logout</a>
     </div>
 </body>
 </html>
