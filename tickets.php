@@ -35,11 +35,11 @@ require 'php/utils.php';
         <table>
             <thead>
                 <tr>
-                <th>Order ID</th>
+                <th>OrderID</th>
                 <th>Date</th>
                 <th>Category</th>
-                <th>Subject</th>
-                <th>Created By</th>
+                <th class="subject">Subject</th>
+                <th>Messages</th>
                 <th>Status</th>
                 <th>Actions</th>
                 </tr>
@@ -53,11 +53,20 @@ require 'php/utils.php';
                 <tr>
                     <td><?php echo $data['order_number'] ?></td>
                     <td><?php echo ($date['day']< 10 ? '0'.$date['day'] : $date['day']). "/".($date['month'] < 10 ? '0'.$date['month'] : $date['month'])  ?></td>
-                    <td>Category</td>
-                    <td>Subject</td>
-                    <td><?php echo $data['user_id'] ?></td>
-                    <td class="<?php echo $data['status'] ?>"><?php echo $data['status'] ?></td>
-                    <td class="buttons"><a class="button">Edit</a><a class="button">Delete</a></td>
+                    <td><?php echo $data['category'] ?></td>
+                    <td><?php echo $data['subject'] ?></td>
+                    <td><?php echo $total_ticket_messages ?></td>
+                    <td class="<?php echo $data['status'] ?> status"><p style="--colour: var(--colour-<?php echo $data['status'] ?>)"><?php echo $data['status'] ?></p></td>
+                    <td> 
+                        <div class="buttons">
+                            <a href="support_ticket.php?id=<?php echo $data['id'] ?>" class="button">
+                                <i class="fa-solid fa-up-right-from-square"></i>
+                            </a>
+                            <a class="button">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
         <?php } ?>
             </tbody>

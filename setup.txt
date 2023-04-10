@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 CREATE TABLE IF NOT EXISTS `tickets` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `order_number` varchar(50) NOT NULL,
+ `category` varchar(50) NOT NULL,
+ `subject` varchar(100) NOT NULL,
  `created_at` DATETIME DEFAULT NOW(),
  `status` varchar(50) NOT NULL DEFAULT 'pending',
  `user_id` INT,

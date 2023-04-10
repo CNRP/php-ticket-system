@@ -63,8 +63,8 @@
             <input type="text" id="email" name="email" placeholder="Email Adress">
             <label id="email_alert" class="alert hidden" for="password">Email not valid format</label>
             <div class="input-group">
-                <input class="password_input" type="password" name="password" id="password" placeholder="Password">
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="Password">
+                <input class="password_input" type="password" name="password" id="password" required placeholder="Password">
+                <input type="password" name="confirm_password" id="confirm_password" required placeholder="Password">
             </div>
             <label id="password_alert_1" class="alert hidden" for="password">Passwords must match</label>
             <label id="password_alert_2" class="alert hidden" for="password">Must be atleast 6 characters, 1 uppercase 1 number and a special character</label>

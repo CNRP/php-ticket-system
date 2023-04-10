@@ -25,6 +25,7 @@ require 'php/utils.php';
     <title>Dashboard - Client area</title>
     <link rel="stylesheet" href="assets/fa/css/all.min.css">
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="table-style.css" />
 </head>
 <body>
     <?php include 'php/navigation.php'; ?>
@@ -38,47 +39,45 @@ require 'php/utils.php';
         <?php } ?>
 
         <h2>Your support tickets</h2>
+        <table>
+            <thead>
+                <tr>
+                <th>OrderID</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th class="subject">Subject</th>
+                <th>Messages</th>
+                <th>Status</th>
+                <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
         <?php
-        if(1){
-
-        }
-        while ($ticket = mysqli_fetch_assoc($tickets)){
-            $total_ticket_messages = $mysqli->query("SELECT COUNT(*) FROM `ticket_messages` WHERE ticket_id=".$ticket['id']." ORDER BY `created_at` ASC")->fetch_assoc()['COUNT(*)'];
-            $ticket_date = date_parse($ticket['created_at']);
+        while ($data = mysqli_fetch_assoc($tickets)){
+            $total_ticket_messages = $mysqli->query("SELECT COUNT(*) FROM `ticket_messages` WHERE ticket_id=".$data['id']." ORDER BY `created_at` ASC")->fetch_assoc()['COUNT(*)'];
+            $date = date_parse($data['created_at']);
         ?>
-        <ul class='tickets orders'>
-            <li>
-                <div class="ticket-status">
-                    <p class="value status status-<?php echo $ticket['status'] ?>"><?php echo $ticket['status'] ?></p>
-                    <div class="right">
-                        <p class="value status-messages">
-                            <?php echo $total_ticket_messages ?> Messages
-                        </p>
-                        <p class="value status-messages">
-                            <?php echo ($ticket_date['day']< 10 ? '0'.$ticket_date['day'] : $ticket_date['day']). "/".($ticket_date[ 'month'] < 10 ? '0'.$ticket_date['month'] : $ticket_date['month']) ?>
-                        </p>
-                    </div>
-                </div>
-                <div class="details">
-                    <div class="ticket-info">
-                        <p class="label">Ticket ID:</p>
-                        <a class="value" href="support_ticket.php?id=<?php echo $ticket['id'] ?>"><?php echo $ticket['id'] ?></a>
-                    </div>
-                    <div class="ticket-info">
-                        <p class="label">User ID:</p>
-                        <a href="account.php?user="<?php echo $ticket['user_id'] ?>" class="value"> <?php echo $ticket['user_id'] ?></a>
-                    </div>
-                    <div class="ticket-info">
-                        <p class="label">Order Number:</p>
-                        <p class="value"><?php echo $ticket['order_number'] ?></p>
-                    </div>
-                    <div class="buttons">
-                        <a class="button" href="support_ticket.php?id=<?php echo $ticket['id'] ?>"><i class="fa-solid fa-circle-arrow-right"></i></a>
-                    </div>
-                </div>
-            </li>
-        </ul>
+                <tr>
+                    <td><?php echo $data['order_number'] ?></td>
+                    <td><?php echo ($date['day']< 10 ? '0'.$date['day'] : $date['day']). "/".($date['month'] < 10 ? '0'.$date['month'] : $date['month'])  ?></td>
+                    <td><?php echo $data['category'] ?></td>
+                    <td><?php echo $data['subject'] ?></td>
+                    <td><?php echo $total_ticket_messages ?></td>
+                    <td class="<?php echo $data['status'] ?> status"><p style="--colour: var(--colour-<?php echo $data['status'] ?>)"><?php echo $data['status'] ?></p></td>
+                    <td> 
+                        <div class="buttons">
+                            <a href="support_ticket.php?id=<?php echo $data['id'] ?>" class="button">
+                                <i class="fa-solid fa-up-right-from-square"></i>
+                            </a>
+                            <a class="button">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
         <?php } ?>
+            </tbody>
+        </table>
         <a class="button" href="/auth/logout.php">Logout</a>
     </div>
 </body>
