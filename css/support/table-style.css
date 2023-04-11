@@ -2,7 +2,7 @@ table{
     width: 100%;
     border-collapse: collapse;
     table-layout: auto;
-    margin-bottom: 2em;
+    border: 1px solid rgb(197, 197, 197);
 }
 
 table .button{
@@ -10,10 +10,10 @@ table .button{
 }
 
 tr, th {
-    text-align: left;
+    text-align: center;
     border-radius: 5px;
     border: 0px;
-    border-bottom: 2px solid rgb(197, 197, 197);
+    border-bottom: 1px solid rgb(197, 197, 197);
 }
 
 tr.subject, th.subject{
@@ -28,9 +28,12 @@ td{
 
 th{
     font-size: 0.8rem;
-    padding: 0em 1em;
+    padding: 1em;
 }
 
+td.subject{
+    text-align: left;
+}
 
 td.status p{
     padding: 0em 1em;

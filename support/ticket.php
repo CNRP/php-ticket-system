@@ -1,10 +1,12 @@
 <?php
 //include auth_session.php file on all user panel pages
-include "auth/session.php";
-include "php/utils.php";
-require "php/db.php";
+include "../auth/session.php";
+include "../support/tickets-table.php";
+include "../php/utils.php";
+require "../auth/db.php";
 
-$ticket = $mysqli->query("SELECT * FROM `tickets` WHERE id='" . $_GET["id"] . "' ORDER BY `created_at` DESC")->fetch_assoc();
+$data = $mysqli->query("SELECT * FROM `tickets` WHERE id='" . $_GET["id"] . "' ORDER BY `created_at` DESC");
+$ticket = $data->fetch_assoc();
 $user_id = $_SESSION["user"]["id"];
 $ticket_user_id = $ticket["user_id"];
 $url = "?id=" . $ticket['id'];
@@ -45,52 +47,17 @@ if ($user_id == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) 
     $alert_text = ($ticket["status"] == "resolved" ? "This ticket has been marked as resolved, if you need help with another issue, feel free to open another ticket." : $alert_text);
 }
 
-?>
-
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <title>Dashboard - Client area</title>
-    <link rel="stylesheet" href="assets/fa/css/all.min.css">
-    <link rel="stylesheet" href="style.css" />
-</head>
-
+$page_title = "Ticket";
+include '../php/header.php'; ?>
 <body>
-    <?php include "php/navigation.php"; ?>
+    <?php include "../php/navigation.php"; ?>
 
     <div class="content">
-        <div class="update-status">
-            <h4>Mark as:</h4>
-            <a href="<?php echo $url?>&status_set=pending" class="status-pending">Pending</a>
-            <a href="<?php echo $url?>&status_set=responded" class="status-responded">Responded</a>
-            <a href="<?php echo $url?>&status_set=resolved" class="status-resolved">Resolved</a>
-            <a href="<?php echo $url?>&status_set=closed" class="status-closed">Closed</a>
-        </div>
         <h1>Your support ticket</h1>
-        <div class="ticket-status">
-            <p class="value status status-<?php echo $ticket['status']?>">
-                <?php echo ($ticket['status'] == "responded" ? "New response" : $ticket['status']) ?>
-            </p>
-        </div>
-        <div class="orders">
-            <div class="details">
-                <div class="ticket-info">
-                    <p class="label">Ticket ID:</p>
-                    <p class="value"><?php echo $ticket['id'] ?></p>
-                </div>
-                <div class="ticket-info">
-                    <p class="label">Order Number:</p>
-                    <p class="value"><?php echo $ticket['order_number']?></p>
-                </div>
-                <div class="ticket-info">
-                    <p class="label">User ID:</p>
-                    <p class="value"><?php echo $ticket['user_id']?></p>
-                </div>
-            </div>
 
-            <div class="messages">
+        <?php echo get_table_html($data); ?>
+
+        <div class="messages">
                 <?php if(isset($alert_text) && $alert_text !== '') { ?>
                     <div class='status-reply status-<?php echo $ticket["status"] ?>'>
                         <p class='alert'>
@@ -129,11 +96,17 @@ if ($user_id == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) 
                 <?php } ?>
             </div>
             <form class="form" action="" method="post">
-                <textarea id="freeform" name="message" rows="4" cols="50" placeholder="Please explain your problem here in as much detail as possible"></textarea>
+                <textarea id="freeform" name="message" rows="4" cols="50" placeholder="Add more information or reply to this thread"></textarea>
                 <input type="submit" name="submit" value="Reply" class="form-button">
             </form>
+        <div class="update-status">
+            <h4>Mark as:</h4>
+            <a href="<?php echo $url?>&status_set=pending" class="status-pending">Pending</a>
+            <a href="<?php echo $url?>&status_set=responded" class="status-responded">Responded</a>
+            <a href="<?php echo $url?>&status_set=resolved" class="status-resolved">Resolved</a>
+            <a href="<?php echo $url?>&status_set=closed" class="status-closed">Closed</a>
         </div>
-        <p><a href="/auth/logout.php">Logout</a></p>
+        <p class="link"><a href="../account.php">Back to account</a></p>
     </div>
 </body>
 

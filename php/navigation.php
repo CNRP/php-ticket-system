@@ -1,7 +1,7 @@
 <section class="navigation">
     <ul>
         <li><p>PHP Support Ticket System</p></li>
-        <li><a href="/index.php" class="button">Submit a ticket</a></li>
+        <li><a href="/support/new-ticket.php" class="button">Submit a ticket</a></li>
     </ul>
     <div class="right">
         <!-- <form action="/search.php">
