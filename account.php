@@ -26,6 +26,8 @@ require 'php/utils.php';
     <link rel="stylesheet" href="assets/fa/css/all.min.css">
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="table-style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 <body>
     <?php include 'php/navigation.php'; ?>

@@ -5,6 +5,8 @@
     <title>Login</title>
     <link rel="stylesheet" href="../assets/fa/css/all.min.css">
     <link rel="stylesheet" href="../style.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 <body>
 <?php
@@ -62,9 +64,6 @@
 ?>
     <div class="page-container">
         <div class="form-container">
-            <!-- <div class="header">
-                <i class="fa-solid fa-right-to-bracket"></i>
-            </div> -->
             <div class="form-toggles">
                 <div>
                     <a class="toggle-forms-button disabled" id="login-toggle" href="#">Login</a>
@@ -101,85 +100,73 @@
 ?>
 <script>
 
-document.addEventListener('DOMContentLoaded', e => {
-// const toggleFormsButton1 = document.getElementById('toggle-forms-button');
-
-document.querySelectorAll(".toggle-forms-button").forEach(e => {
-
-    const loginForm = document.getElementById('login');
-    const registerForm = document.getElementById('register');
-    const loginToggle = document.getElementById('login-toggle');
-    const registerToggle = document.getElementById('register-toggle');
-    const line = document.getElementById('line');
-
-    e.addEventListener('click', () => {
-
-    if (loginForm.classList.contains('hidden')) {
-        // Show the login form and hide the register form
-        loginForm.classList.remove('hidden');
-        registerForm.classList.add('hidden');
-        setTimeout(() => {
-        loginForm.classList.remove('visually-hidden');
-        }, 10);
-        registerForm.classList.add('visually-hidden');
-
-        registerToggle.classList.toggle('disabled');
-        loginToggle.classList.toggle('disabled');
-        line.classList.toggle('left');
-
-    } else {
-        // Show the register form and hide the login form
-        registerForm.classList.remove('hidden');
-        loginForm.classList.add('hidden');
-        setTimeout(() => {
-        registerForm.classList.remove('visually-hidden');
-        }, 10);
-        loginForm.classList.add('visually-hidden');
-        registerToggle.classList.toggle('disabled');
-        loginToggle.classList.toggle('disabled');
-        line.classList.toggle('left');
-    }
+document.addEventListener('DOMContentLoaded', e =>{
+    document.querySelectorAll(".toggle-forms-button").forEach(e =>{
+        e.addEventListener('click', () =>{
+            toggleForms();
+        });
     });
-  });
 
-    var email_input = document.getElementById("email");
-    var password_input = document.getElementById("password");
-    var password_confirm_input = document.getElementById("confirm_password");
-    var submit_registration = document.getElementById("register_submit");
-    var password_alert = document.getElementById("password_alert_1");
-    var password_alert2 = document.getElementById("password_alert_2");
-    var email_alert = document.getElementById("email_alert");
-
-
-    var form_enabled = false;
     var password_valid = false;
     var email_valid = false;
-    // Add an event listener to the input's blur event (when it is unfocused)
-    email_input.addEventListener("blur", function() {
-        var email_alert = document.getElementById("email_alert");
-        console.log(email_valid + " "+ password_valid);
-        // Validate the input value
-        if(validateEmail(email_input.value)){
-            email_valid = true;
-            email_alert.classList.add('hidden');
-        }else{
-            email_alert.classList.remove('hidden');
-        }
-        (password_valid && email_valid) ? submit_registration.classList.remove('disabled') : submit_registration.classList.add('disabled');
+
+    function toggleSubmitButton() {
+        const isDisabled = !password_valid || !email_valid;
+        document.getElementById("register_submit").classList.toggle('disabled', isDisabled);
+    }
+
+    // Add an event listener to the input's blur events (when it is unfocused / clicked off)
+    document.getElementById("email").addEventListener("blur", function() {
+        email_valid = validateEmail(document.getElementById("email").value);
+        document.getElementById("email_alert").classList.toggle('hidden', email_valid);
+        toggleSubmitButton();
     });
 
-    password_confirm_input.addEventListener("blur", function() {
-        console.log(email_valid + " "+ password_valid);
-        // Validate the input value
-        if(validatePassword(password_input.value) && (password_input.value === password_confirm_input.value)){
-            password_valid = true;
-        }else{
-            (password_input.value != password_confirm_input.value) ? password_alert.classList.remove('hidden') : password_alert.classList.add('hidden');
-            (!validatePassword(password_input.value)) ? password_alert2.classList.remove('hidden') : password_alert2.classList.add('hidden');
-        }
-        (password_valid && email_valid) ? submit_registration.classList.remove('disabled') : submit_registration.classList.add('disabled');
+    document.getElementById("confirm_password").addEventListener("blur", function() {
+        password_valid = false;
+        //check if password inputs are the same
+        var isSame = document.getElementById("password").value === document.getElementById("confirm_password").value;
+        //check if password meets validation requirements
+        var isValid = validatePassword(document.getElementById("password").value);
+        //tell script password is valid (both inputs the same and meet format requirements)
+        password_valid = isSame && isValid;
+
+        //check if password inputs are the same, if so hide the alert error message
+        document.getElementById("password_alert_1").classList.toggle('hidden', isSame);
+        //check if the password is formatted correctly, if so ihide the alert error message
+        document.getElementById("password_alert_2").classList.toggle('hidden', isValid);
+        toggleSubmitButton();
     });
 });
+
+
+//code for toggling which form is in view on the login/register page
+function toggleForms() {
+    const form1 = "login";
+    const form2 = "register";
+    const line = document.getElementById('line');
+
+    console.log("hello");
+    [document.getElementById(form1), document.getElementById(form2)].forEach(form => {
+        if(form.classList.contains('hidden')){
+            //remove hidden class (display: none -> display: flex)
+            form.classList.remove('hidden');
+            setTimeout(() => {
+                // 10 after, remove visually-hidden class which makes opacity 1 and allows the form to fade into view.
+                form.classList.remove('visually-hidden');
+            }, 10);
+            //toggle 'disabled' on the button for this form as it is selected already
+            document.getElementById(form1+'-toggle').classList.toggle('disabled');
+        }else{
+            //This does the oposite of the last code block to the other form, as one form will always be hidden while the other is visible
+            //since I dont need the form to fade away there is no need to add a delay
+            form.classList.add('hidden');
+            form.classList.add('visually-hidden');
+            document.getElementById(form2+'-toggle').classList.toggle('disabled');
+        }
+    });
+    line.classList.toggle('left');
+}
 
 function validatePassword(password) {
   // Define the regular expression to test the password against

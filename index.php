@@ -18,6 +18,7 @@ if (!isset($_SESSION['cart'])) {
         <title>PHP Support Ticket Form</title>
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="assets/fa/css/all.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
     <?php include 'php/navigation.php';?>
