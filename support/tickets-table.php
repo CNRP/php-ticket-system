@@ -8,6 +8,7 @@ function get_table_html($data) {
         $date = date_parse($ticket['created_at']);
         $rows .='
         <tr>
+            <td>'. $ticket['display_id'] .'</td>
             <td>'. $ticket['order_number'] .'</td>
             <td>'. ($date['day']< 10 ? '0'.$date['day'] : $date['day']). "/".($date['month'] < 10 ? '0'.$date['month'] : $date['month']) .'</td>
             <td>'. $ticket['category'] .'</td>
@@ -32,6 +33,7 @@ function get_table_html($data) {
     $html = '<table>
         <thead>
             <tr>
+                <th>TicketID</th>
                 <th>OrderID</th>
                 <th>Date</th>
                 <th>Category</th>

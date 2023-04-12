@@ -44,7 +44,6 @@ function toggleForms() {
     const form2 = "register";
     const line = document.getElementById('line');
 
-    console.log("hello");
     [document.getElementById(form1), document.getElementById(form2)].forEach(form => {
         if(form.classList.contains('hidden')){
             //remove hidden class (display: none -> display: flex)

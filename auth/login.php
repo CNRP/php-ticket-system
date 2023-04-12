@@ -10,7 +10,7 @@ include '../php/header.php'; ?>
 <body>
 <?php
     // When form submitted, check and create user session.
-    if (isset($_POST['email'])) {
+    if (isset($_POST['login_submit'])) {
 
         // Prepare SQL statement
         $stmt = $mysqli->prepare("SELECT * FROM users WHERE email = ?");
@@ -44,16 +44,51 @@ include '../php/header.php'; ?>
             }
         } else {
             // User not found
-            $error = 'Invalid username';
+            $error = 'Invalid email';
         }
-
+        echo $error;
         // Close database connection
         $mysqli->close();
 
+    }elseif (isset($_POST['register_submit'])){
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $confirm_password = $_POST['confirm_password'];
+        // Validate user input
+        if (empty($first_name) || empty($last_name) ||empty($email) || empty($password) || empty($confirm_password)) {
+            $error = 'All fields are required';
+        } elseif ($password != $confirm_password) {
+            $error = 'Passwords do not match';
+        } else {
+            // Hash password
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+            // Prepare SQL statement
+            $stmt = $mysqli->prepare("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)");
+
+            // Bind parameters
+            $stmt->bind_param('ssss', $first_name, $last_name, $email, $hashed_password);
+
+            // Execute query
+            if ($stmt->execute()) {
+                // Registration successful
+                header('Location: ../account.php');
+                exit;
+            } else {
+                // Registration failed
+                $error = 'Registration failed. Please try again later.';
+            }
+            // Close database connection
+            $mysqli->close();
+
+        }
     } else {
 ?>
     <div class="page-container">
         <div class="form-container">
+
             <div class="form-toggles">
                 <div>
                     <a class="toggle-forms-button disabled" id="login-toggle" href="#">Login</a>
@@ -61,13 +96,15 @@ include '../php/header.php'; ?>
                 </div>
                 <div id="line"></div>
             </div>
+
             <form class="auth" id="login" method="post" name="login">
                 <input type="text" class="login-input" name="email" placeholder="Email" autofocus="true" required="true"/>
                 <input type="password" class="login-input" name="password" placeholder="Password" required="true"/>
-                <input type="submit" value="Login" name="submit" class="form-button" required="true"/>
+                <input type="submit" value="Login" name="login_submit" class="form-button" required="true"/>
                 <p class="link"><a href="registration.php">New Registration</a></p>
             </form>
-            <form class="auth hidden visually-hidden" id="register" action="" method="post">
+
+            <form class="auth hidden visually-hidden" id="register" method="post" name="register">
                 <div class="input-group">
                     <input class="first_name_input" type="text" name="first_name" placeholder="First name" required />
                     <input type="text" name="last_name" placeholder="Last name" required />
@@ -80,7 +117,7 @@ include '../php/header.php'; ?>
                 </div>
                 <label id="password_alert_1" class="alert hidden" for="password">Passwords must match</label>
                 <label id="password_alert_2" class="alert hidden" for="password">Must be atleast 6 characters, 1 uppercase 1 number and a special character</label>
-                <input id="register_submit" type="submit" name="submit" value="Register" class="form-button">
+                <input id="register_submit" type="submit" name="register_submit" value="Register" class="form-button">
                 <p class="link"><a href="login.php">Have an account? Click here to Login.</a></p>
             </form>
         </div>

@@ -13,9 +13,8 @@ include '../php/header.php'; ?>
 
     // When form submitted, insert values into the database.
     if (isset($_GET['submitId'])) {
-
-        $stmt = $mysqli->prepare("INSERT INTO tickets (user_id, order_number, category, subject) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param('ssss', $_SESSION['user']['id'], $_POST['order_number'], $_POST['category'], $_POST['subject']);
+        $stmt = $mysqli->prepare("INSERT INTO tickets (display_id, user_id, order_number, category, subject) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param('sssss', rand(10000,99999), $_SESSION['user']['id'], $_POST['order_number'], $_POST['category'], $_POST['subject']);
 
         // Execute query
         if ($stmt->execute()) {
