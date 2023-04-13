@@ -1,14 +1,11 @@
 <?php
 include '../php/utils.php';
-include_once '../php/navigation.php';
 require '../auth/db.php';
 session_start();
 
 $page_title = "Login / Register";
-include '../php/header.php'; ?>
-
-<body>
-<?php
+include '../php/header.php';
+include_once '../php/navigation.php';
     // When form submitted, check and create user session.
     if (isset($_POST['login_submit'])) {
 
@@ -124,9 +121,5 @@ include '../php/header.php'; ?>
     </div>
 <?php
     }
+include '../php/footer.php';
 ?>
-
-<!-- script controls the toggling of login/register forms  -->
-<script src="../js/auth/script.js"></script>
-</body>
-</html>

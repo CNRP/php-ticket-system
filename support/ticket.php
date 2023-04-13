@@ -48,9 +48,8 @@ if ($user_id == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) 
 }
 
 $page_title = "Ticket";
-include '../php/header.php'; ?>
-<body>
-    <?php include "../php/navigation.php"; ?>
+include '../php/header.php';
+include "../php/navigation.php"; ?>
 
     <div class="content">
         <h1>Your support ticket</h1>
@@ -108,6 +107,4 @@ include '../php/header.php'; ?>
         </div>
         <p class="link"><a href="../account.php">Back to account</a></p>
     </div>
-</body>
-
-</html>
+<?php include '../php/footer.php';?>

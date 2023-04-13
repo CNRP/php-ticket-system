@@ -6,10 +6,8 @@ require '../auth/db.php';
 
 
 $page_title = "Create a new ticket";
-include '../php/header.php'; ?>
-
-<body>
-    <?php include '../php/navigation.php';
+include '../php/header.php';
+include '../php/navigation.php';
 
     // When form submitted, insert values into the database.
     if (isset($_GET['submitId'])) {
@@ -54,8 +52,5 @@ include '../php/header.php'; ?>
 </div>
 <?php
     }
+include 'php/footer.php';
 ?>
-
-    <script src="script.js"></script>
-    </body>
-</html>

@@ -4,13 +4,13 @@ include "support/tickets-table.php";
 require 'auth/db.php';
 require 'php/utils.php';
 
-    $id = $_SESSION['user']['id'];
-    $tickets = $mysqli->query("SELECT * FROM `tickets` WHERE user_id=$id ORDER BY `status`='pending' DESC, `created_at` ASC");
+$id = $_SESSION['user']['id'];
+$tickets = $mysqli->query("SELECT * FROM `tickets` WHERE user_id=$id ORDER BY `status`='pending' DESC, `created_at` ASC");
 
 $page_title = "Account View";
-include 'php/header.php'; ?>
-<body>
-    <?php include 'php/navigation.php'; ?>
+include 'php/header.php';
+include 'php/navigation.php';
+?>
     <div class="content">
         <h2>Hey, <?php echo $_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']; ?>!</h2>
         <h4>Email: <?php echo $_SESSION['user']['email'] ?></h4>
@@ -24,5 +24,4 @@ include 'php/header.php'; ?>
             <a href="/support/tickets-overview.php" class="button">All Tickets</a>
         <?php } ?>
     </div>
-</body>
-</html>
+<?php include 'php/footer.php';?>
