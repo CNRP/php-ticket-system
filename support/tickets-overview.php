@@ -5,12 +5,12 @@ include "../support/tickets-table.php";
 require '../auth/db.php';
 require '../php/utils.php';
 
-    if ($_SESSION['user']['user_type'] == 2) {
-        $tickets = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
-    }
 $page_title = "Tickets overview";
 include '../php/header.php';
-include '../php/navigation.php'; ?>
+include '../php/navigation.php';
+
+if ($_SESSION['user']['user_type'] == 2) {
+?>
     <div class="content">
         <h2>Hey, <?php echo $_SESSION['user']['first_name']." ".$_SESSION['user']['last_name']; ?>!</h2>
 
@@ -22,20 +22,21 @@ include '../php/navigation.php'; ?>
         <br>
         <?php
             if(isset($_POST['value'])){
-                $ticks = $mysqli->query("
+                $tickets = $mysqli->query("
                 SELECT * FROM tickets
                 WHERE display_id = '" . $_POST["value"] . "' OR
                 order_number = '" . $_POST["value"] . "' OR
                 user_id = '" . $_POST["value"] . "'
                 ");
                 if($_POST['value'] == ""){
-                    $ticks = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
-
+                    $tickets = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
                 }
             }else{
-                $ticks = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
+                $tickets = $mysqli->query("SELECT * FROM `tickets` ORDER BY `status`='pending' DESC, `created_at` ASC");
             }
-            echo get_table_html($ticks);
+            echo get_table_html($tickets);
         ?>
     </div>
-<?php include '../php/footer.php';?>
+<?php 
+}
+    include '../php/footer.php';?>

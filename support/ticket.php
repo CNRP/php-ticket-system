@@ -43,10 +43,9 @@ if ($user_id == $_SESSION["user"]["id"] or $_SESSION["user"]["user_type"] == 2) 
     $ticket_message_total = mysqli_num_rows($ticket_messages);
     $ticket_message_count = 1;
 
-    $alert_text = ($ticket["status"] == "closed" ? "This ticket has been marked as closed, if your issue wasnt resolved feel free to reply here or open another ticket." : "");
-    $alert_text = ($ticket["status"] == "resolved" ? "This ticket has been marked as resolved, if you need help with another issue, feel free to open another ticket." : $alert_text);
+    $alert_text = ($ticket["status"] == "closed" ? "This ticket has been marked as closed, if your issue wasnt resolved feel free to open another ticket." : "");
+    $alert_text = ($ticket["status"] == "resolved" ? "This ticket has been marked as resolved, if you need help with another issue feel free to open another ticket." : $alert_text);
 }
-
 $page_title = "Ticket";
 include '../php/header.php';
 include "../php/navigation.php"; ?>
@@ -94,7 +93,7 @@ include "../php/navigation.php"; ?>
                 </div>
                 <?php } ?>
             </div>
-            <form class="form" action="" method="post">
+            <form class="<?php echo (in_array($ticket["status"], array("closed", "resolved")) ?  "disabled":  "") ?>" class="form" action="" method="post">
                 <textarea id="freeform" name="message" rows="4" cols="50" placeholder="Add more information or reply to this thread"></textarea>
                 <input type="submit" name="submit" value="Reply" class="form-button">
             </form>
